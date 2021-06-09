@@ -1,0 +1,36 @@
+type Query {
+
+}
+
+type Mutation {
+    login(username: String!, password: String!, shortSession: Boolean!): LoginDetails
+}
+
+type LoginDetails {
+    user: User!
+    token: Token!
+}
+
+type Token {
+    accessToken: String
+    expiresIn: Date
+}
+
+type AssetEntry {
+    asset: Asset!
+    validity: Validity!
+}
+
+type Validity {
+    enabled: Boolean!
+    from: Date
+    to: Date
+}
+
+scalar Date
+scalar FileUpload
+
+schema {
+    query: Query,
+    mutation: Mutation
+}

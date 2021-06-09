@@ -1,0 +1,65 @@
+type Alert {
+    id: ID!
+    name: String!
+    type: String!
+    position: String!
+    value: String!
+    validity: Validity
+    background: Style
+    borders: Style
+    height: Style
+    textSize: Style
+    textColor: Style
+    textPosition: Style
+}
+
+input CreateAlertInput {
+    name: String!
+    type: String!
+    position: String!
+    value: String!
+    validityEnabled: Boolean
+    validFrom: Date
+    validTo: Date
+    background: String
+    borders: String
+    height: String
+    textSize: String
+    textColor: String
+    textPosition: String
+}
+
+input UpdateAlertInput {
+    name: String
+    type: String
+    position: String
+    value: String
+    validityEnabled: Boolean
+    validFrom: Date
+    validTo: Date
+    background: String
+    borders: String
+    height: String
+    textSize: String
+    textColor: String
+    textPosition: String
+}
+
+input FindAlertInput {
+    id: ID
+    name: String
+    type: String
+    position: String
+    value: String
+}
+
+extend type Query {
+    findAlert(data: FindAlertInput!): Alert!
+    findAllAlerts(data: FindAlertInput!): [Alert]!
+}
+
+extend type Mutation {
+    createAlert(data: CreateAlertInput!): Alert!
+    updateAlert(id: ID!, data: UpdateAlertInput!): Alert!
+    deleteAlert(id: ID!): Boolean!
+}

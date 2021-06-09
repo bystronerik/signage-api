@@ -1,0 +1,35 @@
+type User {
+    id: ID!
+    username: String!
+    role: String
+}
+
+input CreateUserInput {
+    username: String!
+    password: String!
+    role: String
+}
+
+input UpdateUserInput {
+    username: String
+    password: String
+    role: String
+}
+
+input FindUserInput {
+    id: ID
+    username: String
+    password: String
+    role: String
+}
+
+extend type Query {
+    findUser(data: FindUserInput!): User!
+    findAllUsers(data: FindUserInput!): [User]!
+}
+
+extend type Mutation {
+    createUser(data: CreateUserInput!): User!
+    updateUser(id: ID!, data: UpdateUserInput!): User!
+    deleteUser(id: ID!): Boolean!
+}

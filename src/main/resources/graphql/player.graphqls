@@ -1,0 +1,36 @@
+type Player {
+    id: ID!
+    name: String!
+    token: String!
+    group: Group
+}
+
+input CreatePlayerInput {
+    name: String!
+    token: String!
+    group: String
+}
+
+input UpdatePlayerInput {
+    name: String
+    token: String
+    group: String
+}
+
+input FindPlayerInput {
+    id: ID
+    name: String
+    token: String
+    group: String
+}
+
+extend type Query {
+    findPlayer(data: FindPlayerInput!): Player!
+    findAllPlayers(data: FindPlayerInput!): [Player]!
+}
+
+extend type Mutation {
+    createPlayer(data: CreatePlayerInput!): Player!
+    updatePlayer(id: ID!, data: UpdatePlayerInput!): Player!
+    deletePlayer(id: ID!): Boolean!
+}

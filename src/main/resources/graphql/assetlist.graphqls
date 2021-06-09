@@ -1,0 +1,60 @@
+type AssetList {
+    id: ID!
+    name: String!
+    type: String!
+    animationIn: Style
+    animationOut: Style
+    validity: Validity
+    enabled: Boolean!
+    assets: [AssetEntry]
+}
+
+input CreateAssetListInput {
+    name: String!
+    type: String!
+    animationIn: String
+    animationOut: String
+    validityEnabled: Boolean
+    validFrom: Date
+    validTo: Date
+    enabled: Boolean!
+}
+
+input UpdateAssetListInput {
+    name: String
+    type: String
+    animationIn: String
+    animationOut: String
+    validityEnabled: Boolean
+    validFrom: Date
+    validTo: Date
+    enabled: Boolean
+}
+
+input FindAssetListInput {
+    id: ID
+    name: String
+    type: String
+    enabled: Boolean
+}
+
+input AssetAssignInput {
+    asset: String!
+    validityEnabled: Boolean!
+    validFrom: Date
+    validTo: Date
+}
+
+extend type Query {
+    findAssetList(data: FindAssetListInput!): AssetList!
+    findAllAssetLists(data: FindAssetListInput!): [AssetList]!
+}
+
+extend type Mutation {
+    createAssetList(data: CreateAssetListInput!): AssetList!
+    updateAssetList(id: ID!, data: UpdateAssetListInput!): AssetList!
+    deleteAssetList(id: ID!): Boolean!
+
+    assignAssetToAssetList(id: ID!, data: AssetAssignInput!): AssetList!
+    removeAssetFromAssetList(id: ID!, asset: ID!): AssetList!
+}

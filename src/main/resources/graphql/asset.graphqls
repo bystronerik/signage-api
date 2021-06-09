@@ -1,0 +1,49 @@
+type Asset {
+    id: ID!
+    name: String!
+    path: String!
+    type: String!
+    showTime: Int
+    validity: Validity
+    animationIn: Style
+    animationOut: Style
+    assetLists: [AssetList]
+}
+
+input CreateAssetInput {
+    name: String!
+    showTime: Int
+    animationIn: String
+    animationOut: String
+    validityEnabled: Boolean
+    validFrom: Date
+    validTo: Date
+}
+
+input UpdateAssetInput {
+    name: String
+    showTime: Int
+    animationIn: String
+    animationOut: String
+    validityEnabled: Boolean
+    validFrom: Date
+    validTo: Date
+}
+
+input FindAssetInput {
+    id: ID
+    name: String
+    path: String
+    type: String
+}
+
+extend type Query {
+    findAsset(data: FindAssetInput!): Asset!
+    findAllAssets(data: FindAssetInput!): [Asset]!
+}
+
+extend type Mutation {
+    createAsset(data: CreateAssetInput!, file: FileUpload!): Asset!
+    updateAsset(id: ID!, data: UpdateAssetInput!, file: FileUpload): Asset!
+    deleteAsset(id: ID!): Boolean!
+}

@@ -1,0 +1,34 @@
+type Group {
+    id: ID!
+    name: String!
+    alert: Alert
+    assetLists: [AssetList]
+}
+
+input CreateGroupInput {
+    name: String!
+    alert: String
+    assetLists: [String]
+}
+
+input UpdateGroupInput {
+    name: String
+    alert: String
+    assetLists: [String]
+}
+
+input FindGroupInput {
+    id: ID
+    name: String
+}
+
+extend type Query {
+    findGroup(data: FindGroupInput!): Group!
+    findAllGroups(data: FindGroupInput!): [Group]!
+}
+
+extend type Mutation {
+    createGroup(data: CreateGroupInput!): Group!
+    updateGroup(id: ID!, data: UpdateGroupInput!): Group!
+    deleteGroup(id: ID!): Boolean!
+}

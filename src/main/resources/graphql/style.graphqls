@@ -1,0 +1,39 @@
+type Style {
+    id: ID!
+    name: String!
+    type: String!
+    value: String!
+    valueType: String!
+}
+
+input CreateStyleInput {
+    name: String!
+    type: String!
+    value: String!
+    valueType: String!
+}
+
+input UpdateStyleInput {
+    name: String
+    type: String
+    value: String
+    valueType: String
+}
+
+input FindStyleInput {
+    id: ID
+    name: String
+    type: String
+    valueType: String
+}
+
+extend type Query {
+    findStyle(data: FindStyleInput!): Style!
+    findAllStyles(data: FindStyleInput!): [Style]!
+}
+
+extend type Mutation {
+    createStyle(data: CreateStyleInput!): Style!
+    updateStyle(id: ID!, data: UpdateStyleInput!): Style!
+    deleteStyle(id: ID!): Boolean!
+}

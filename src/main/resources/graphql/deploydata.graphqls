@@ -1,0 +1,20 @@
+type DeployData {
+    id: String!
+    versionHash: String!
+}
+
+type PlayerData {
+    assets: [AssetEntry]!
+    priorityAssets: [AssetEntry]!
+    alert: Alert
+    styles: [Style]!
+}
+
+extend type Query {
+    deployInfo: DeployData
+    syncPlayer(token: String!): PlayerData
+}
+
+extend type Mutation {
+    deploy: DeployData
+}
