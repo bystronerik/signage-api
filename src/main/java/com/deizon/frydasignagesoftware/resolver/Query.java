@@ -1,6 +1,8 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver;
 
-import com.deizon.frydasignagesoftware.exception.*;
+import com.deizon.frydasignagesoftware.exception.ItemNotFoundException;
+import com.deizon.frydasignagesoftware.exception.MissingDeployDataException;
 import com.deizon.frydasignagesoftware.model.AssetEntry;
 import com.deizon.frydasignagesoftware.model.alert.Alert;
 import com.deizon.frydasignagesoftware.model.alert.FindAlertInput;
@@ -10,12 +12,16 @@ import com.deizon.frydasignagesoftware.model.assetlist.AssetList;
 import com.deizon.frydasignagesoftware.model.assetlist.FindAssetListInput;
 import com.deizon.frydasignagesoftware.model.deploydata.DeployData;
 import com.deizon.frydasignagesoftware.model.deploydata.PlayerData;
+import com.deizon.frydasignagesoftware.model.directory.Directory;
+import com.deizon.frydasignagesoftware.model.directory.FindDirectoryInput;
 import com.deizon.frydasignagesoftware.model.group.FindGroupInput;
 import com.deizon.frydasignagesoftware.model.group.Group;
 import com.deizon.frydasignagesoftware.model.player.FindPlayerInput;
 import com.deizon.frydasignagesoftware.model.player.Player;
 import com.deizon.frydasignagesoftware.model.style.FindStyleInput;
 import com.deizon.frydasignagesoftware.model.style.Style;
+import com.deizon.frydasignagesoftware.model.tag.FindTagInput;
+import com.deizon.frydasignagesoftware.model.tag.Tag;
 import com.deizon.frydasignagesoftware.model.user.FindUserInput;
 import com.deizon.frydasignagesoftware.model.user.User;
 import com.deizon.frydasignagesoftware.repository.*;
@@ -26,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
+@SuppressWarnings("unused")
 @RequiredArgsConstructor
 @Component
 @PreAuthorize("isAuthenticated()")
@@ -39,6 +46,8 @@ public class Query implements GraphQLQueryResolver {
     private final DeployDataRepository deployDataRepository;
     private final StyleRepository styleRepository;
     private final AlertRepository alertRepository;
+    private final DirectoryRepository directoryRepository;
+    private final TagRepository tagRepository;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public Iterable<User> findAllUsers(FindUserInput data) {
@@ -49,7 +58,7 @@ public class Query implements GraphQLQueryResolver {
     public User findUser(FindUserInput data) throws Throwable {
         return userRepository
                 .findOne(User.createExample(data))
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(User.class));
     }
 
     public Iterable<Asset> findAllAssets(FindAssetInput data) {
@@ -59,7 +68,7 @@ public class Query implements GraphQLQueryResolver {
     public Asset findAsset(FindAssetInput data) throws Throwable {
         return assetRepository
                 .findOne(Asset.createExample(data))
-                .orElseThrow(AssetNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(Asset.class));
     }
 
     public Iterable<Group> findAllGroups(FindGroupInput data) {
@@ -69,7 +78,7 @@ public class Query implements GraphQLQueryResolver {
     public Group findGroup(FindGroupInput data) throws Throwable {
         return groupRepository
                 .findOne(Group.createExample(data))
-                .orElseThrow(GroupNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(Group.class));
     }
 
     public Iterable<Player> findAllPlayers(FindPlayerInput data) {
@@ -79,7 +88,7 @@ public class Query implements GraphQLQueryResolver {
     public Player findPlayer(FindPlayerInput data) throws Throwable {
         return playerRepository
                 .findOne(Player.createExample(data))
-                .orElseThrow(PlayerNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(Player.class));
     }
 
     public Iterable<AssetList> findAllAssetLists(FindAssetListInput data) {
@@ -89,7 +98,7 @@ public class Query implements GraphQLQueryResolver {
     public AssetList findAssetList(FindAssetListInput data) throws Throwable {
         return assetListRepository
                 .findOne(AssetList.createExample(data))
-                .orElseThrow(AssetListNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(AssetList.class));
     }
 
     public Iterable<Style> findAllStyles(FindStyleInput data) {
@@ -99,7 +108,7 @@ public class Query implements GraphQLQueryResolver {
     public Style findStyle(FindStyleInput data) throws Throwable {
         return styleRepository
                 .findOne(Style.createExample(data))
-                .orElseThrow(StyleNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(Style.class));
     }
 
     public Iterable<Alert> findAllAlerts(FindAlertInput data) {
@@ -109,7 +118,27 @@ public class Query implements GraphQLQueryResolver {
     public Alert findAlert(FindAlertInput data) throws Throwable {
         return alertRepository
                 .findOne(Alert.createExample(data))
-                .orElseThrow(AlertNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(Alert.class));
+    }
+
+    public Iterable<Directory> findAllDirectories(FindDirectoryInput data) {
+        return directoryRepository.findAll(Directory.createExample(data));
+    }
+
+    public Directory findDirectory(FindDirectoryInput data) throws Throwable {
+        return directoryRepository
+                .findOne(Directory.createExample(data))
+                .orElseThrow(() -> new ItemNotFoundException(Directory.class));
+    }
+
+    public Iterable<Tag> findAllTags(FindTagInput data) {
+        return tagRepository.findAll(Tag.createExample(data));
+    }
+
+    public Tag findTag(FindTagInput data) throws Throwable {
+        return tagRepository
+                .findOne(Tag.createExample(data))
+                .orElseThrow(() -> new ItemNotFoundException(Tag.class));
     }
 
     @PreAuthorize("isAnonymous() || isAuthenticated()")
@@ -125,11 +154,13 @@ public class Query implements GraphQLQueryResolver {
         final List<AssetEntry> priorityAssets = new ArrayList<>();
 
         final Player player =
-                playerRepository.findByToken(token).orElseThrow(PlayerNotFoundException::new);
+                playerRepository
+                        .findByToken(token)
+                        .orElseThrow(() -> new ItemNotFoundException(Player.class));
         final Group group =
                 groupRepository
                         .findById(player.getGroup())
-                        .orElseThrow(GroupNotFoundException::new);
+                        .orElseThrow(() -> new ItemNotFoundException(Group.class));
 
         if (group.getAssetLists() != null && !group.getAssetLists().isEmpty()) {
             assetListRepository
@@ -180,7 +211,7 @@ public class Query implements GraphQLQueryResolver {
                                                         }
                                                     }
 
-                                                    if (playlist.getType().equals("highpriority")) {
+                                                    if (playlist.getPrioritized()) {
                                                         priorityAssets.add(entry);
                                                     } else {
                                                         assets.add(entry);
@@ -194,7 +225,7 @@ public class Query implements GraphQLQueryResolver {
             alert =
                     alertRepository
                             .findById(group.getAlert())
-                            .orElseThrow(AlertNotFoundException::new);
+                            .orElseThrow(() -> new ItemNotFoundException(Alert.class));
         }
 
         return new PlayerData(assets, priorityAssets, alert, styleRepository.findAll());

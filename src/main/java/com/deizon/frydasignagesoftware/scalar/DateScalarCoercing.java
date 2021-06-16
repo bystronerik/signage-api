@@ -1,3 +1,4 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.scalar;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;

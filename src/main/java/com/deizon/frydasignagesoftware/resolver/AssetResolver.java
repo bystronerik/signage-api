@@ -1,7 +1,7 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver;
 
-import com.deizon.frydasignagesoftware.exception.AlertNotFoundException;
-import com.deizon.frydasignagesoftware.exception.StyleNotFoundException;
+import com.deizon.frydasignagesoftware.exception.ItemNotFoundException;
 import com.deizon.frydasignagesoftware.model.alert.Alert;
 import com.deizon.frydasignagesoftware.model.asset.Asset;
 import com.deizon.frydasignagesoftware.model.assetlist.AssetList;
@@ -28,7 +28,9 @@ public class AssetResolver implements GraphQLResolver<Asset> {
     public Alert getAlert(Asset asset) {
         if (asset.getAlert() == null) return null;
 
-        return alertRepository.findById(asset.getAlert()).orElseThrow(AlertNotFoundException::new);
+        return alertRepository
+                .findById(asset.getAlert())
+                .orElseThrow(() -> new ItemNotFoundException(Alert.class));
     }
 
     public Style getAnimationIn(Asset asset) {
@@ -36,7 +38,7 @@ public class AssetResolver implements GraphQLResolver<Asset> {
 
         return styleRepository
                 .findById(asset.getAnimationIn())
-                .orElseThrow(StyleNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(Style.class));
     }
 
     public Style getAnimationOut(Asset asset) {
@@ -44,7 +46,7 @@ public class AssetResolver implements GraphQLResolver<Asset> {
 
         return styleRepository
                 .findById(asset.getAnimationOut())
-                .orElseThrow(StyleNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(Style.class));
     }
 
     public String getType(Asset asset) {

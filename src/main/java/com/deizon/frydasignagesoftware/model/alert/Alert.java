@@ -1,3 +1,4 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.alert;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
@@ -29,6 +30,8 @@ public class Alert extends Entity {
     private String textSize;
     private String textColor;
     private String textPosition;
+
+    private Boolean running;
 
     public static Example<Alert> createExample(FindAlertInput data) {
         ExampleMatcher matcher = ExampleMatcher.matching();
@@ -74,5 +77,7 @@ public class Alert extends Entity {
         TOP,
         MIDDLE,
         BOTTOM,
+        LEFT_TOP_RIGHT_BOTTOM,
+        LEFT_BOTTOM_RIGHT_TOP
     }
 }

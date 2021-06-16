@@ -1,0 +1,32 @@
+type Tag {
+    id: ID!
+    name: String!
+    color: String
+}
+
+input CreateTagInput {
+    name: String!
+    color: String
+}
+
+input UpdateTagInput {
+    name: String!
+    color: String
+}
+
+input FindTagInput {
+    id: ID
+    name: String
+    color: String
+}
+
+extend type Query {
+    findTag(data: FindTagInput!): Tag!
+    findAllTags(data: FindTagInput!): [Tag]!
+}
+
+extend type Mutation {
+    createTag(data: CreateTagInput!): Tag!
+    updateTag(id: ID!, data: UpdateTagInput!): Tag!
+    deleteTag(id: ID!): Boolean!
+}

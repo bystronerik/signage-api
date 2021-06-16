@@ -1,16 +1,15 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.group;
 
-import java.util.List;
-import lombok.AllArgsConstructor;
+import com.deizon.frydasignagesoftware.model.ListChange;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class UpdateGroupInput {
 
     private String name;
     private String alert;
-    private List<String> assetLists;
+    private ListChange assetLists;
 }

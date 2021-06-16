@@ -1,15 +1,11 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.player;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class CreatePlayerInput {
-
-    private String name;
-    private String token;
-    private String group;
-}
+@EqualsAndHashCode(callSuper = false)
+public class CreatePlayerInput extends UpdatePlayerInput {}

@@ -1,3 +1,4 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.assetlist;
 
 import java.time.Instant;
@@ -14,4 +15,8 @@ public class AssetAssignInput {
     private Boolean validityEnabled;
     private Instant validFrom;
     private Instant validTo;
+    private Integer showTime;
+    private String animationIn;
+    private String animationOut;
+    private Integer position;
 }

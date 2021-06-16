@@ -11,6 +11,7 @@ type Alert {
     textSize: Style
     textColor: Style
     textPosition: Style
+    running: Boolean
 }
 
 input CreateAlertInput {
@@ -27,6 +28,7 @@ input CreateAlertInput {
     textSize: String
     textColor: String
     textPosition: String
+    running: Boolean
 }
 
 input UpdateAlertInput {
@@ -43,6 +45,7 @@ input UpdateAlertInput {
     textSize: String
     textColor: String
     textPosition: String
+    running: Boolean
 }
 
 input FindAlertInput {

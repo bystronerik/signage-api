@@ -1,6 +1,7 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver;
 
-import com.deizon.frydasignagesoftware.exception.StyleNotFoundException;
+import com.deizon.frydasignagesoftware.exception.ItemNotFoundException;
 import com.deizon.frydasignagesoftware.model.alert.Alert;
 import com.deizon.frydasignagesoftware.model.style.Style;
 import com.deizon.frydasignagesoftware.repository.StyleRepository;
@@ -19,7 +20,7 @@ public class AlertResolver implements GraphQLResolver<Alert> {
 
         return styleRepository
                 .findById(alert.getBackground())
-                .orElseThrow(StyleNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(Style.class));
     }
 
     public Style getBorders(Alert alert) {
@@ -27,13 +28,15 @@ public class AlertResolver implements GraphQLResolver<Alert> {
 
         return styleRepository
                 .findById(alert.getBorders())
-                .orElseThrow(StyleNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(Style.class));
     }
 
     public Style getHeight(Alert alert) {
         if (alert.getHeight() == null) return null;
 
-        return styleRepository.findById(alert.getHeight()).orElseThrow(StyleNotFoundException::new);
+        return styleRepository
+                .findById(alert.getHeight())
+                .orElseThrow(() -> new ItemNotFoundException(Style.class));
     }
 
     public Style getTextSize(Alert alert) {
@@ -41,7 +44,7 @@ public class AlertResolver implements GraphQLResolver<Alert> {
 
         return styleRepository
                 .findById(alert.getTextSize())
-                .orElseThrow(StyleNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(Style.class));
     }
 
     public Style getTextColor(Alert alert) {
@@ -49,7 +52,7 @@ public class AlertResolver implements GraphQLResolver<Alert> {
 
         return styleRepository
                 .findById(alert.getTextColor())
-                .orElseThrow(StyleNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(Style.class));
     }
 
     public Style getTextPosition(Alert alert) {
@@ -57,6 +60,6 @@ public class AlertResolver implements GraphQLResolver<Alert> {
 
         return styleRepository
                 .findById(alert.getTextPosition())
-                .orElseThrow(StyleNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(Style.class));
     }
 }

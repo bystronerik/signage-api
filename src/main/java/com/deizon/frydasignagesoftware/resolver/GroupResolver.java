@@ -1,6 +1,7 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver;
 
-import com.deizon.frydasignagesoftware.exception.AlertNotFoundException;
+import com.deizon.frydasignagesoftware.exception.ItemNotFoundException;
 import com.deizon.frydasignagesoftware.model.alert.Alert;
 import com.deizon.frydasignagesoftware.model.assetlist.AssetList;
 import com.deizon.frydasignagesoftware.model.group.Group;
@@ -27,6 +28,8 @@ public class GroupResolver implements GraphQLResolver<Group> {
     public Alert getAlert(Group group) {
         if (group.getAlert() == null) return null;
 
-        return alertRepository.findById(group.getAlert()).orElseThrow(AlertNotFoundException::new);
+        return alertRepository
+                .findById(group.getAlert())
+                .orElseThrow(() -> new ItemNotFoundException(Alert.class));
     }
 }

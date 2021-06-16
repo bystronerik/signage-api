@@ -1,0 +1,32 @@
+type Directory {
+    id: ID!
+    name: String!
+    parentDirectory: Directory
+}
+
+input CreateDirectoryInput {
+    name: String!
+    parentDirectory: String
+}
+
+input UpdateDirectoryInput {
+    name: String!
+    parentDirectory: String
+}
+
+input FindDirectoryInput {
+    id: ID
+    name: String
+    parentDirectory: String
+}
+
+extend type Query {
+    findDirectory(data: FindDirectoryInput!): Directory!
+    findAllDirectories(data: FindDirectoryInput!): [Directory]!
+}
+
+extend type Mutation {
+    createDirectory(data: CreateDirectoryInput!): Directory!
+    updateDirectory(id: ID!, data: UpdateDirectoryInput!): Directory!
+    deleteDirectory(id: ID!): Boolean!
+}

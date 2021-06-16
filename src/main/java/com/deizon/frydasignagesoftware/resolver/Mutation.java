@@ -1,3 +1,4 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver;
 
 import com.deizon.frydasignagesoftware.exception.*;
@@ -16,6 +17,9 @@ import com.deizon.frydasignagesoftware.model.assetlist.CreateAssetListInput;
 import com.deizon.frydasignagesoftware.model.assetlist.UpdateAssetListInput;
 import com.deizon.frydasignagesoftware.model.auth.LoginDetails;
 import com.deizon.frydasignagesoftware.model.deploydata.DeployData;
+import com.deizon.frydasignagesoftware.model.directory.CreateDirectoryInput;
+import com.deizon.frydasignagesoftware.model.directory.Directory;
+import com.deizon.frydasignagesoftware.model.directory.UpdateDirectoryInput;
 import com.deizon.frydasignagesoftware.model.group.CreateGroupInput;
 import com.deizon.frydasignagesoftware.model.group.Group;
 import com.deizon.frydasignagesoftware.model.group.UpdateGroupInput;
@@ -25,6 +29,9 @@ import com.deizon.frydasignagesoftware.model.player.UpdatePlayerInput;
 import com.deizon.frydasignagesoftware.model.style.CreateStyleInput;
 import com.deizon.frydasignagesoftware.model.style.Style;
 import com.deizon.frydasignagesoftware.model.style.UpdateStyleInput;
+import com.deizon.frydasignagesoftware.model.tag.CreateTagInput;
+import com.deizon.frydasignagesoftware.model.tag.Tag;
+import com.deizon.frydasignagesoftware.model.tag.UpdateTagInput;
 import com.deizon.frydasignagesoftware.model.user.CreateUserInput;
 import com.deizon.frydasignagesoftware.model.user.UpdateUserInput;
 import com.deizon.frydasignagesoftware.model.user.User;
@@ -47,6 +54,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+@SuppressWarnings("unused")
 @RequiredArgsConstructor
 @Component
 @PreAuthorize("isAuthenticated()")
@@ -60,6 +68,8 @@ public class Mutation implements GraphQLMutationResolver {
     private final DeployDataRepository deployDataRepository;
     private final StyleRepository styleRepository;
     private final AlertRepository alertRepository;
+    private final DirectoryRepository directoryRepository;
+    private final TagRepository tagRepository;
 
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
@@ -90,6 +100,12 @@ public class Mutation implements GraphQLMutationResolver {
 
         if (data.getAnimationOut() != null) assetList.setAnimationOut(data.getAnimationOut());
 
+        if (data.getPrioritized() != null) {
+            assetList.setPrioritized(data.getPrioritized());
+        } else {
+            assetList.setPrioritized(false);
+        }
+
         if (data.getEnabled() != null) {
             assetList.setEnabled(data.getEnabled());
         } else {
@@ -108,7 +124,9 @@ public class Mutation implements GraphQLMutationResolver {
 
     public AssetList updateAssetList(String id, UpdateAssetListInput data) {
         final AssetList assetList =
-                assetListRepository.findById(id).orElseThrow(AssetListNotFoundException::new);
+                assetListRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(AssetList.class));
         assetList.setUpdateDate(Instant.now());
 
         if (data.getName() != null) assetList.setName(data.getName());
@@ -118,6 +136,8 @@ public class Mutation implements GraphQLMutationResolver {
         if (data.getAnimationOut() != null) assetList.setAnimationOut(data.getAnimationOut());
 
         if (data.getType() != null) assetList.setType(data.getType());
+
+        if (data.getPrioritized() != null) assetList.setPrioritized(data.getPrioritized());
 
         if (data.getEnabled() != null) assetList.setEnabled(data.getEnabled());
 
@@ -133,13 +153,13 @@ public class Mutation implements GraphQLMutationResolver {
 
     public AssetList assignAssetToAssetList(String id, AssetAssignInput data) {
         final AssetList assetList =
-                assetListRepository.findById(id).orElseThrow(AssetListNotFoundException::new);
+                assetListRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(AssetList.class));
         assetList.setUpdateDate(Instant.now());
 
         if (assetList.getAssets() == null) {
             assetList.setAssets(new ArrayList<>());
-        } else {
-            assetList.getAssets().removeIf(value -> (value.getAsset().equals(data.getAsset())));
         }
 
         final Validity validity = new Validity();
@@ -148,6 +168,7 @@ public class Mutation implements GraphQLMutationResolver {
         validity.setTo(data.getValidTo());
 
         final AssetEntry assetEntry = new AssetEntry();
+        assetEntry.setPosition(data.getPosition());
         assetEntry.setAsset(data.getAsset());
         assetEntry.setValidity(validity);
 
@@ -156,19 +177,23 @@ public class Mutation implements GraphQLMutationResolver {
         return assetListRepository.save(assetList);
     }
 
-    public AssetList removeAssetFromAssetList(String id, String asset) {
+    public AssetList removeAssetFromAssetList(String id, String assetEntry) {
         final AssetList assetList =
-                assetListRepository.findById(id).orElseThrow(AssetListNotFoundException::new);
+                assetListRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(AssetList.class));
         assetList.setUpdateDate(Instant.now());
 
-        assetList.getAssets().removeIf(value -> (value.getAsset().equals(asset)));
+        assetList.getAssets().removeIf(value -> (value.getId().equals(assetEntry)));
 
         return assetListRepository.save(assetList);
     }
 
     public Boolean deleteAssetList(String id) {
         final AssetList assetList =
-                assetListRepository.findById(id).orElseThrow(AssetListNotFoundException::new);
+                assetListRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(AssetList.class));
         assetList.setDeleted(true);
         assetList.setUpdateDate(Instant.now());
 
@@ -197,7 +222,10 @@ public class Mutation implements GraphQLMutationResolver {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public User updateUser(String id, UpdateUserInput data) {
-        final User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        final User user =
+                userRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(User.class));
         user.setUpdateDate(Instant.now());
 
         if (data.getUsername() != null) {
@@ -220,7 +248,10 @@ public class Mutation implements GraphQLMutationResolver {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public Boolean deleteUser(String id) {
-        final User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        final User user =
+                userRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(User.class));
         user.setDeleted(true);
         user.setUpdateDate(Instant.now());
 
@@ -236,7 +267,7 @@ public class Mutation implements GraphQLMutationResolver {
 
         group.setName(data.getName());
 
-        if (data.getAssetLists() != null) group.setAssetLists(data.getAssetLists());
+        if (data.getAssetLists() != null) data.getAssetLists().process(group.getAssetLists());
 
         if (data.getAlert() != null) group.setAlert(data.getAlert());
 
@@ -244,12 +275,15 @@ public class Mutation implements GraphQLMutationResolver {
     }
 
     public Group updateGroup(String id, UpdateGroupInput data) {
-        final Group group = groupRepository.findById(id).orElseThrow(GroupNotFoundException::new);
+        final Group group =
+                groupRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(Group.class));
         group.setUpdateDate(Instant.now());
 
         if (data.getName() != null) group.setName(data.getName());
 
-        if (data.getAssetLists() != null) group.setAssetLists(data.getAssetLists());
+        if (data.getAssetLists() != null) data.getAssetLists().process(group.getAssetLists());
 
         if (data.getAlert() != null) group.setAlert(data.getAlert());
 
@@ -257,7 +291,10 @@ public class Mutation implements GraphQLMutationResolver {
     }
 
     public Boolean deleteGroup(String id) {
-        final Group group = groupRepository.findById(id).orElseThrow(GroupNotFoundException::new);
+        final Group group =
+                groupRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(Group.class));
         group.setDeleted(true);
         group.setUpdateDate(Instant.now());
 
@@ -280,7 +317,10 @@ public class Mutation implements GraphQLMutationResolver {
     }
 
     public Style updateStyle(String id, UpdateStyleInput data) {
-        final Style style = styleRepository.findById(id).orElseThrow(StyleNotFoundException::new);
+        final Style style =
+                styleRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(Style.class));
         style.setUpdateDate(Instant.now());
 
         if (data.getName() != null) style.setName(data.getName());
@@ -295,7 +335,10 @@ public class Mutation implements GraphQLMutationResolver {
     }
 
     public Boolean deleteStyle(String id) {
-        final Style style = styleRepository.findById(id).orElseThrow(StyleNotFoundException::new);
+        final Style style =
+                styleRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(Style.class));
         style.setDeleted(true);
         style.setUpdateDate(Instant.now());
 
@@ -326,6 +369,8 @@ public class Mutation implements GraphQLMutationResolver {
 
         if (data.getTextSize() != null) alert.setTextSize(data.getTextSize());
 
+        if (data.getRunning() != null) alert.setRunning(data.getRunning());
+
         if (data.getValidityEnabled() != null
                 && data.getValidFrom() != null
                 && data.getValidTo() != null)
@@ -337,7 +382,10 @@ public class Mutation implements GraphQLMutationResolver {
     }
 
     public Alert updateAlert(String id, UpdateAlertInput data) {
-        final Alert alert = alertRepository.findById(id).orElseThrow(AlertNotFoundException::new);
+        final Alert alert =
+                alertRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(Alert.class));
         alert.setUpdateDate(Instant.now());
 
         if (data.getName() != null) alert.setName(data.getName());
@@ -360,6 +408,8 @@ public class Mutation implements GraphQLMutationResolver {
 
         if (data.getTextSize() != null) alert.setTextSize(data.getTextSize());
 
+        if (data.getRunning() != null) alert.setRunning(data.getRunning());
+
         if (data.getValidityEnabled() != null
                 && data.getValidFrom() != null
                 && data.getValidTo() != null)
@@ -371,7 +421,10 @@ public class Mutation implements GraphQLMutationResolver {
     }
 
     public Boolean deleteAlert(String id) {
-        final Alert alert = alertRepository.findById(id).orElseThrow(AlertNotFoundException::new);
+        final Alert alert =
+                alertRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(Alert.class));
         alert.setDeleted(true);
         alert.setUpdateDate(Instant.now());
 
@@ -395,25 +448,106 @@ public class Mutation implements GraphQLMutationResolver {
 
     public Player updatePlayer(String id, UpdatePlayerInput data) {
         final Player player =
-                playerRepository.findById(id).orElseThrow(PlayerNotFoundException::new);
+                playerRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(Player.class));
         player.setUpdateDate(Instant.now());
 
         if (data.getName() != null) player.setName(data.getName());
 
         if (data.getToken() != null) player.setToken(data.getToken());
 
-        if (data.getGroup() != null) player.setGroup(data.getGroup());
+        if (data.getGroup() != null)
+            player.setGroup(data.getGroup().isEmpty() ? null : data.getGroup());
 
         return playerRepository.save(player);
     }
 
     public Boolean deletePlayer(String id) {
         final Player player =
-                playerRepository.findById(id).orElseThrow(PlayerNotFoundException::new);
+                playerRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(Player.class));
         player.setDeleted(true);
         player.setUpdateDate(Instant.now());
 
         playerRepository.save(player);
+
+        return true;
+    }
+
+    public Directory createDirectory(CreateDirectoryInput data) {
+        final Directory directory = new Directory();
+        directory.setCreateDate(Instant.now());
+        directory.setDeleted(false);
+
+        directory.setName(data.getName());
+
+        if (data.getParentDirectory() != null)
+            directory.setParentDirectory(data.getParentDirectory());
+
+        return directoryRepository.save(directory);
+    }
+
+    public Directory updateDirectory(String id, UpdateDirectoryInput data) {
+        final Directory directory =
+                directoryRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(Directory.class));
+        directory.setUpdateDate(Instant.now());
+
+        if (data.getName() != null) directory.setName(data.getName());
+
+        if (data.getParentDirectory() != null)
+            directory.setParentDirectory(data.getParentDirectory());
+
+        return directoryRepository.save(directory);
+    }
+
+    public Boolean deleteDirectory(String id) {
+        final Directory directory =
+                directoryRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(Directory.class));
+        directory.setDeleted(true);
+        directory.setUpdateDate(Instant.now());
+
+        directoryRepository.save(directory);
+
+        return true;
+    }
+
+    public Tag createTag(CreateTagInput data) {
+        final Tag tag = new Tag();
+        tag.setCreateDate(Instant.now());
+        tag.setDeleted(false);
+
+        tag.setName(data.getName());
+
+        if (data.getColor() != null) tag.setColor(data.getColor());
+
+        return tagRepository.save(tag);
+    }
+
+    public Tag updateTag(String id, UpdateTagInput data) {
+        final Tag tag =
+                tagRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(Tag.class));
+        tag.setUpdateDate(Instant.now());
+
+        if (data.getName() != null) tag.setName(data.getName());
+
+        if (data.getColor() != null) tag.setColor(data.getColor());
+
+        return tagRepository.save(tag);
+    }
+
+    public Boolean deleteTag(String id) {
+        final Tag tag =
+                tagRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(Tag.class));
+        tag.setDeleted(true);
+        tag.setUpdateDate(Instant.now());
+
+        tagRepository.save(tag);
 
         return true;
     }
@@ -458,7 +592,10 @@ public class Mutation implements GraphQLMutationResolver {
     }
 
     public Asset updateAsset(String id, UpdateAssetInput data, FileUpload file) throws IOException {
-        final Asset asset = assetRepository.findById(id).orElseThrow(AssetNotFoundException::new);
+        final Asset asset =
+                assetRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(Asset.class));
         asset.setUpdateDate(Instant.now());
 
         if (data.getName() != null) asset.setName(data.getName());
@@ -490,7 +627,10 @@ public class Mutation implements GraphQLMutationResolver {
     }
 
     public Boolean deleteAsset(String id) {
-        final Asset asset = assetRepository.findById(id).orElseThrow(AssetNotFoundException::new);
+        final Asset asset =
+                assetRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(Asset.class));
         asset.setDeleted(true);
         asset.setUpdateDate(Instant.now());
 

@@ -1,3 +1,4 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.player;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
@@ -37,6 +38,11 @@ public class Player extends Entity {
         if (data.getToken() != null) {
             player.setToken(data.getToken());
             matcher = matcher.withMatcher("token", exact());
+        }
+
+        if (data.getGroup() != null) {
+            player.setGroup(data.getGroup());
+            matcher = matcher.withMatcher("group", exact());
         }
 
         player.setDeleted(false);

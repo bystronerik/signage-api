@@ -1,3 +1,4 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.assetlist;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
@@ -22,6 +23,7 @@ public class AssetList extends Entity {
     private String name;
     private String type;
     private Validity validity;
+    private Boolean prioritized;
     private Boolean enabled;
     private List<AssetEntry> assets;
 
@@ -45,6 +47,11 @@ public class AssetList extends Entity {
         if (data.getType() != null) {
             assetList.setType(data.getType());
             matcher = matcher.withMatcher("type", exact());
+        }
+
+        if (data.getPrioritized() != null) {
+            assetList.setPrioritized(data.getPrioritized());
+            matcher = matcher.withMatcher("prioritized", exact());
         }
 
         if (data.getEnabled() != null) {

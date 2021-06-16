@@ -1,16 +1,18 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.assetlist;
 
-import lombok.AllArgsConstructor;
+import com.deizon.frydasignagesoftware.model.FindInput;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class FindAssetListInput {
+@EqualsAndHashCode(callSuper = false)
+public class FindAssetListInput extends FindInput {
 
-    private String id;
     private String name;
     private String type;
+    private Boolean prioritized;
     private Boolean enabled;
 }

@@ -1,3 +1,4 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.group;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;

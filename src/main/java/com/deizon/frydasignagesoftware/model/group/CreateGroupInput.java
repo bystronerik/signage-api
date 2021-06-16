@@ -1,16 +1,11 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.group;
 
-import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class CreateGroupInput {
-
-    private String name;
-    private String alert;
-    private List<String> assetLists;
-}
+@EqualsAndHashCode(callSuper = false)
+public class CreateGroupInput extends UpdateGroupInput {}

@@ -1,13 +1,12 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.alert;
 
 import java.time.Instant;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class UpdateAlertInput {
 
     private String name;
@@ -25,4 +24,6 @@ public class UpdateAlertInput {
     private String textSize;
     private String textColor;
     private String textPosition;
+
+    private Boolean running;
 }

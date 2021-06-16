@@ -1,20 +1,11 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.asset;
 
-import java.time.Instant;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class CreateAssetInput {
-
-    private String name;
-    private Integer showTime;
-    private String animationIn;
-    private String animationOut;
-    private Boolean validityEnabled;
-    private Instant validFrom;
-    private Instant validTo;
-}
+@EqualsAndHashCode(callSuper = false)
+public class CreateAssetInput extends UpdateAssetInput {}

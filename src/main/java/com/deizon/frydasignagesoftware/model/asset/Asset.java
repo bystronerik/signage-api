@@ -1,9 +1,13 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.asset;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
 
 import com.deizon.frydasignagesoftware.model.Entity;
 import com.deizon.frydasignagesoftware.model.Validity;
+import com.mongodb.BasicDBList;
+import java.util.List;
+import java.util.Optional;
 import lombok.*;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -28,6 +32,9 @@ public class Asset extends Entity {
     private String animationIn;
     private String animationOut;
 
+    private String directory;
+    private List<String> tags;
+
     public static Example<Asset> createExample(FindAssetInput data) {
         ExampleMatcher matcher = ExampleMatcher.matching();
         final Asset asset = new Asset();
@@ -50,6 +57,26 @@ public class Asset extends Entity {
         if (data.getType() != null) {
             asset.setType(data.getType());
             matcher = matcher.withMatcher("type", exact());
+        }
+
+        if (data.getDirectory() != null) {
+            asset.setDirectory(data.getDirectory());
+            matcher = matcher.withMatcher("directory", exact());
+        }
+
+        if (data.getTag() != null) {
+            asset.setTags(List.of(data.getTag()));
+            matcher =
+                    matcher.withMatcher(
+                            "tags",
+                            match ->
+                                    match.transform(
+                                                    source ->
+                                                            Optional.of(
+                                                                    ((BasicDBList) source.get())
+                                                                            .iterator()
+                                                                            .next()))
+                                            .exact());
         }
 
         asset.setDeleted(false);

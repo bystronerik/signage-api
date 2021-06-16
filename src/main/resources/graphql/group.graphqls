@@ -14,7 +14,7 @@ input CreateGroupInput {
 input UpdateGroupInput {
     name: String
     alert: String
-    assetLists: [String]
+    assetLists: ListChange
 }
 
 input FindGroupInput {

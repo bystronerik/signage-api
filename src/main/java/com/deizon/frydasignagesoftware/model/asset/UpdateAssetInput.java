@@ -1,13 +1,13 @@
+/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.asset;
 
 import java.time.Instant;
-import lombok.AllArgsConstructor;
+import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class UpdateAssetInput {
 
     private String name;
@@ -17,4 +17,6 @@ public class UpdateAssetInput {
     private Boolean validityEnabled;
     private Instant validFrom;
     private Instant validTo;
+    private String directory;
+    private List<String> tags;
 }

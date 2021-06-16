@@ -5,6 +5,7 @@ type AssetList {
     animationIn: Style
     animationOut: Style
     validity: Validity
+    prioritized: Boolean
     enabled: Boolean!
     assets: [AssetEntry]
 }
@@ -17,6 +18,7 @@ input CreateAssetListInput {
     validityEnabled: Boolean
     validFrom: Date
     validTo: Date
+    prioritized: Boolean
     enabled: Boolean!
 }
 
@@ -28,6 +30,7 @@ input UpdateAssetListInput {
     validityEnabled: Boolean
     validFrom: Date
     validTo: Date
+    prioritized: Boolean
     enabled: Boolean
 }
 
@@ -35,6 +38,7 @@ input FindAssetListInput {
     id: ID
     name: String
     type: String
+    prioritized: Boolean
     enabled: Boolean
 }
 
@@ -43,6 +47,10 @@ input AssetAssignInput {
     validityEnabled: Boolean!
     validFrom: Date
     validTo: Date
+    showTime: Int
+    animationIn: String
+    animationOut: String
+    position: Int
 }
 
 extend type Query {
@@ -56,5 +64,5 @@ extend type Mutation {
     deleteAssetList(id: ID!): Boolean!
 
     assignAssetToAssetList(id: ID!, data: AssetAssignInput!): AssetList!
-    removeAssetFromAssetList(id: ID!, asset: ID!): AssetList!
+    removeAssetFromAssetList(id: ID!, assetEntry: ID!): AssetList!
 }

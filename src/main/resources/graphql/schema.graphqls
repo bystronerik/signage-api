@@ -19,6 +19,10 @@ type Token {
 type AssetEntry {
     asset: Asset!
     validity: Validity!
+    showTime: Int
+    animationIn: Style
+    animationOut: Style
+    position: Int
 }
 
 type Validity {
@@ -29,6 +33,11 @@ type Validity {
 
 scalar Date
 scalar FileUpload
+
+input ListChange {
+    mergeStrategy: String!
+    content: [String]!
+}
 
 schema {
     query: Query,
