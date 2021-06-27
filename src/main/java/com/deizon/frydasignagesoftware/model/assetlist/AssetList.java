@@ -1,15 +1,11 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.assetlist;
 
-import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
-
 import com.deizon.frydasignagesoftware.model.AssetEntry;
-import com.deizon.frydasignagesoftware.model.Entity;
-import com.deizon.frydasignagesoftware.model.Validity;
+import com.deizon.services.model.Validity;
+import com.deizon.services.model.Entity;
 import java.util.List;
 import lombok.*;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -29,39 +25,4 @@ public class AssetList extends Entity {
 
     private String animationIn;
     private String animationOut;
-
-    public static Example<AssetList> createExample(FindAssetListInput data) {
-        ExampleMatcher matcher = ExampleMatcher.matching();
-        final AssetList assetList = new AssetList();
-
-        if (data.getId() != null) {
-            assetList.setId(data.getId());
-            matcher = matcher.withMatcher("id", exact());
-        }
-
-        if (data.getName() != null) {
-            assetList.setName(data.getName());
-            matcher = matcher.withMatcher("name", exact());
-        }
-
-        if (data.getType() != null) {
-            assetList.setType(data.getType());
-            matcher = matcher.withMatcher("type", exact());
-        }
-
-        if (data.getPrioritized() != null) {
-            assetList.setPrioritized(data.getPrioritized());
-            matcher = matcher.withMatcher("prioritized", exact());
-        }
-
-        if (data.getEnabled() != null) {
-            assetList.setEnabled(data.getEnabled());
-            matcher = matcher.withMatcher("enabled", exact());
-        }
-
-        assetList.setDeleted(false);
-        matcher.withMatcher("deleted", exact());
-
-        return Example.of(assetList, matcher);
-    }
 }

@@ -5,141 +5,31 @@ import com.deizon.frydasignagesoftware.exception.ItemNotFoundException;
 import com.deizon.frydasignagesoftware.exception.MissingDeployDataException;
 import com.deizon.frydasignagesoftware.model.AssetEntry;
 import com.deizon.frydasignagesoftware.model.alert.Alert;
-import com.deizon.frydasignagesoftware.model.alert.FindAlertInput;
-import com.deizon.frydasignagesoftware.model.asset.Asset;
-import com.deizon.frydasignagesoftware.model.asset.FindAssetInput;
-import com.deizon.frydasignagesoftware.model.assetlist.AssetList;
-import com.deizon.frydasignagesoftware.model.assetlist.FindAssetListInput;
 import com.deizon.frydasignagesoftware.model.deploydata.DeployData;
 import com.deizon.frydasignagesoftware.model.deploydata.PlayerData;
-import com.deizon.frydasignagesoftware.model.directory.Directory;
-import com.deizon.frydasignagesoftware.model.directory.FindDirectoryInput;
-import com.deizon.frydasignagesoftware.model.group.FindGroupInput;
 import com.deizon.frydasignagesoftware.model.group.Group;
-import com.deizon.frydasignagesoftware.model.player.FindPlayerInput;
 import com.deizon.frydasignagesoftware.model.player.Player;
-import com.deizon.frydasignagesoftware.model.style.FindStyleInput;
-import com.deizon.frydasignagesoftware.model.style.Style;
-import com.deizon.frydasignagesoftware.model.tag.FindTagInput;
-import com.deizon.frydasignagesoftware.model.tag.Tag;
-import com.deizon.frydasignagesoftware.model.user.FindUserInput;
-import com.deizon.frydasignagesoftware.model.user.User;
 import com.deizon.frydasignagesoftware.repository.*;
+import graphql.kickstart.tools.GraphQLMutationResolver;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
-@SuppressWarnings("unused")
 @RequiredArgsConstructor
 @Component
 @PreAuthorize("isAuthenticated()")
-public class Query implements GraphQLQueryResolver {
+public class DeployDataResolver implements GraphQLQueryResolver, GraphQLMutationResolver {
 
-    private final AssetRepository assetRepository;
-    private final GroupRepository groupRepository;
-    private final PlayerRepository playerRepository;
-    private final AssetListRepository assetListRepository;
-    private final UserRepository userRepository;
     private final DeployDataRepository deployDataRepository;
-    private final StyleRepository styleRepository;
+    private final PlayerRepository playerRepository;
+    private final GroupRepository groupRepository;
+    private final AssetListRepository assetListRepository;
     private final AlertRepository alertRepository;
-    private final DirectoryRepository directoryRepository;
-    private final TagRepository tagRepository;
-
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public Iterable<User> findAllUsers(FindUserInput data) {
-        return userRepository.findAll(User.createExample(data));
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public User findUser(FindUserInput data) throws Throwable {
-        return userRepository
-                .findOne(User.createExample(data))
-                .orElseThrow(() -> new ItemNotFoundException(User.class));
-    }
-
-    public Iterable<Asset> findAllAssets(FindAssetInput data) {
-        return assetRepository.findAll(Asset.createExample(data));
-    }
-
-    public Asset findAsset(FindAssetInput data) throws Throwable {
-        return assetRepository
-                .findOne(Asset.createExample(data))
-                .orElseThrow(() -> new ItemNotFoundException(Asset.class));
-    }
-
-    public Iterable<Group> findAllGroups(FindGroupInput data) {
-        return groupRepository.findAll(Group.createExample(data));
-    }
-
-    public Group findGroup(FindGroupInput data) throws Throwable {
-        return groupRepository
-                .findOne(Group.createExample(data))
-                .orElseThrow(() -> new ItemNotFoundException(Group.class));
-    }
-
-    public Iterable<Player> findAllPlayers(FindPlayerInput data) {
-        return playerRepository.findAll(Player.createExample(data));
-    }
-
-    public Player findPlayer(FindPlayerInput data) throws Throwable {
-        return playerRepository
-                .findOne(Player.createExample(data))
-                .orElseThrow(() -> new ItemNotFoundException(Player.class));
-    }
-
-    public Iterable<AssetList> findAllAssetLists(FindAssetListInput data) {
-        return assetListRepository.findAll(AssetList.createExample(data));
-    }
-
-    public AssetList findAssetList(FindAssetListInput data) throws Throwable {
-        return assetListRepository
-                .findOne(AssetList.createExample(data))
-                .orElseThrow(() -> new ItemNotFoundException(AssetList.class));
-    }
-
-    public Iterable<Style> findAllStyles(FindStyleInput data) {
-        return styleRepository.findAll(Style.createExample(data));
-    }
-
-    public Style findStyle(FindStyleInput data) throws Throwable {
-        return styleRepository
-                .findOne(Style.createExample(data))
-                .orElseThrow(() -> new ItemNotFoundException(Style.class));
-    }
-
-    public Iterable<Alert> findAllAlerts(FindAlertInput data) {
-        return alertRepository.findAll(Alert.createExample(data));
-    }
-
-    public Alert findAlert(FindAlertInput data) throws Throwable {
-        return alertRepository
-                .findOne(Alert.createExample(data))
-                .orElseThrow(() -> new ItemNotFoundException(Alert.class));
-    }
-
-    public Iterable<Directory> findAllDirectories(FindDirectoryInput data) {
-        return directoryRepository.findAll(Directory.createExample(data));
-    }
-
-    public Directory findDirectory(FindDirectoryInput data) throws Throwable {
-        return directoryRepository
-                .findOne(Directory.createExample(data))
-                .orElseThrow(() -> new ItemNotFoundException(Directory.class));
-    }
-
-    public Iterable<Tag> findAllTags(FindTagInput data) {
-        return tagRepository.findAll(Tag.createExample(data));
-    }
-
-    public Tag findTag(FindTagInput data) throws Throwable {
-        return tagRepository
-                .findOne(Tag.createExample(data))
-                .orElseThrow(() -> new ItemNotFoundException(Tag.class));
-    }
+    private final StyleRepository styleRepository;
 
     @PreAuthorize("isAnonymous() || isAuthenticated()")
     public DeployData deployInfo() {
@@ -229,5 +119,14 @@ public class Query implements GraphQLQueryResolver {
         }
 
         return new PlayerData(assets, priorityAssets, alert, styleRepository.findAll());
+    }
+
+    public DeployData deploy() {
+        final DeployData deployData =
+                deployDataRepository.findAll().stream().findFirst().orElseGet(DeployData::new);
+
+        deployData.setVersionHash(RandomStringUtils.random(20, true, true));
+
+        return deployDataRepository.save(deployData);
     }
 }

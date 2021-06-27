@@ -1,7 +1,7 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.scalar;
 
-import com.deizon.frydasignagesoftware.model.FileUpload;
+import com.deizon.services.model.FileUpload;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingParseLiteralException;
 import graphql.schema.CoercingParseValueException;

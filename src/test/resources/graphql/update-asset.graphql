@@ -1,0 +1,6 @@
+mutation{
+    updateAsset(id: "601892ddaa4bf8414bfca954", data: {name: "gggtestovic"}){
+        id
+        name
+    }
+}

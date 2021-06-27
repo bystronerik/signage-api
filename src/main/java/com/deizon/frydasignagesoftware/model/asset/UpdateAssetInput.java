@@ -3,12 +3,14 @@ package com.deizon.frydasignagesoftware.model.asset;
 
 import java.time.Instant;
 import java.util.List;
+
+import com.deizon.services.model.ValidityInput;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class UpdateAssetInput {
+public class UpdateAssetInput implements ValidityInput {
 
     private String name;
     private Integer showTime;

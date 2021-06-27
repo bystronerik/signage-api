@@ -2,12 +2,14 @@
 package com.deizon.frydasignagesoftware.model.assetlist;
 
 import java.time.Instant;
+
+import com.deizon.services.model.ValidityInput;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class UpdateAssetListInput {
+public class UpdateAssetListInput implements ValidityInput {
 
     private String name;
     private String type;

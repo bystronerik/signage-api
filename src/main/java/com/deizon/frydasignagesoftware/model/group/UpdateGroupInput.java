@@ -1,7 +1,7 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.group;
 
-import com.deizon.frydasignagesoftware.model.ListChange;
+import com.deizon.services.model.ListChange;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

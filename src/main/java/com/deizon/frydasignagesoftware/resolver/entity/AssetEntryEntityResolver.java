@@ -1,5 +1,5 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
-package com.deizon.frydasignagesoftware.resolver;
+package com.deizon.frydasignagesoftware.resolver.entity;
 
 import com.deizon.frydasignagesoftware.exception.ItemNotFoundException;
 import com.deizon.frydasignagesoftware.model.AssetEntry;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class AssetEntryResolver implements GraphQLResolver<AssetEntry> {
+public class AssetEntryEntityResolver implements GraphQLResolver<AssetEntry> {
 
     private final AssetRepository assetRepository;
     private final StyleRepository styleRepository;

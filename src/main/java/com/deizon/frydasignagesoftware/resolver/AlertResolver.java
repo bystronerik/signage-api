@@ -2,64 +2,48 @@
 package com.deizon.frydasignagesoftware.resolver;
 
 import com.deizon.frydasignagesoftware.exception.ItemNotFoundException;
+import com.deizon.services.model.Validity;
 import com.deizon.frydasignagesoftware.model.alert.Alert;
-import com.deizon.frydasignagesoftware.model.style.Style;
-import com.deizon.frydasignagesoftware.repository.StyleRepository;
-import graphql.kickstart.tools.GraphQLResolver;
+import com.deizon.frydasignagesoftware.model.alert.CreateAlertInput;
+import com.deizon.frydasignagesoftware.model.alert.FindAlertInput;
+import com.deizon.frydasignagesoftware.model.alert.UpdateAlertInput;
+import com.deizon.frydasignagesoftware.repository.AlertRepository;
+import com.deizon.frydasignagesoftware.service.AlertService;
+import graphql.kickstart.tools.GraphQLMutationResolver;
+import graphql.kickstart.tools.GraphQLQueryResolver;
+import java.time.Instant;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class AlertResolver implements GraphQLResolver<Alert> {
+@PreAuthorize("isAuthenticated()")
+public class AlertResolver implements GraphQLQueryResolver, GraphQLMutationResolver {
 
-    private final StyleRepository styleRepository;
+    private final AlertService service;
 
-    public Style getBackground(Alert alert) {
-        if (alert.getBackground() == null) return null;
-
-        return styleRepository
-                .findById(alert.getBackground())
-                .orElseThrow(() -> new ItemNotFoundException(Style.class));
+    public Iterable<Alert> findAllAlerts(FindAlertInput input) {
+        return this.service.findAll(input);
     }
 
-    public Style getBorders(Alert alert) {
-        if (alert.getBorders() == null) return null;
-
-        return styleRepository
-                .findById(alert.getBorders())
-                .orElseThrow(() -> new ItemNotFoundException(Style.class));
+    public Alert findAlert(FindAlertInput input) {
+        return this.service.find(input);
     }
 
-    public Style getHeight(Alert alert) {
-        if (alert.getHeight() == null) return null;
-
-        return styleRepository
-                .findById(alert.getHeight())
-                .orElseThrow(() -> new ItemNotFoundException(Style.class));
+    public Alert createAlert(CreateAlertInput data) {
+        return this.service.create(data);
     }
 
-    public Style getTextSize(Alert alert) {
-        if (alert.getTextSize() == null) return null;
-
-        return styleRepository
-                .findById(alert.getTextSize())
-                .orElseThrow(() -> new ItemNotFoundException(Style.class));
+    public Alert updateAlert(String id, UpdateAlertInput data) {
+        return this.service.update(id, data);
     }
 
-    public Style getTextColor(Alert alert) {
-        if (alert.getTextColor() == null) return null;
-
-        return styleRepository
-                .findById(alert.getTextColor())
-                .orElseThrow(() -> new ItemNotFoundException(Style.class));
+    public Alert deleteAlert(String id) {
+        return this.service.delete(id);
     }
 
-    public Style getTextPosition(Alert alert) {
-        if (alert.getTextPosition() == null) return null;
-
-        return styleRepository
-                .findById(alert.getTextPosition())
-                .orElseThrow(() -> new ItemNotFoundException(Style.class));
+    public boolean totalDeleteAlert(String id) {
+        return this.service.totalDelete(id);
     }
 }

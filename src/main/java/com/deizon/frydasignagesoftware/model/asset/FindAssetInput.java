@@ -1,7 +1,8 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.asset;
 
-import com.deizon.frydasignagesoftware.model.FindInput;
+import com.deizon.services.model.FindInput;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,5 +16,5 @@ public class FindAssetInput extends FindInput {
     private String path;
     private Asset.Type type;
     private String directory;
-    private String tag;
+    private List<String> tags;
 }

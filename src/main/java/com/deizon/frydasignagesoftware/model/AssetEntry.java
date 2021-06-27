@@ -1,6 +1,7 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model;
 
+import com.deizon.services.model.Validity;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 

@@ -1,6 +1,7 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware;
 
+import com.deizon.services.GraphQLExceptionHandler;
 import graphql.ExecutionResult;
 import graphql.execution.AsyncExecutionStrategy;
 import graphql.execution.ExecutionContext;

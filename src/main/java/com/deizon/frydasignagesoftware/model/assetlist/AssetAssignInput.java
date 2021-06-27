@@ -2,6 +2,8 @@
 package com.deizon.frydasignagesoftware.model.assetlist;
 
 import java.time.Instant;
+
+import com.deizon.services.model.ValidityInput;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AssetAssignInput {
+public class AssetAssignInput implements ValidityInput  {
 
     private String asset;
     private Boolean validityEnabled;

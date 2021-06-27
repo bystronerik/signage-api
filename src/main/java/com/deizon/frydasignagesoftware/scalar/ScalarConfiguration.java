@@ -1,6 +1,7 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.scalar;
 
+import com.deizon.services.scalar.DateTimeScalarCoercing;
 import graphql.schema.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,11 +19,11 @@ public class ScalarConfiguration {
     }
 
     @Bean
-    public GraphQLScalarType dateScalar() {
+    public GraphQLScalarType dateTimeScalar() {
         return GraphQLScalarType.newScalar()
                 .name("Date")
-                .description("Java Date as scalar.")
-                .coercing(new DateScalarCoercing())
+                .description("Java Instant as scalar. DateTime value field.")
+                .coercing(new DateTimeScalarCoercing())
                 .build();
     }
 }

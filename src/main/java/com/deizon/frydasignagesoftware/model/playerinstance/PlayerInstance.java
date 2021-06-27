@@ -1,7 +1,7 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.playerinstance;
 
-import com.deizon.frydasignagesoftware.model.Entity;
+import com.deizon.services.model.Entity;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 

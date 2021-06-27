@@ -2,12 +2,14 @@
 package com.deizon.frydasignagesoftware.model.alert;
 
 import java.time.Instant;
+
+import com.deizon.services.model.ValidityInput;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class UpdateAlertInput {
+public class UpdateAlertInput implements ValidityInput {
 
     private String name;
     private Alert.Type type;
