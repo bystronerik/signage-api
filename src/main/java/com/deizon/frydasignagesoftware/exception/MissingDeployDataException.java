@@ -1,13 +1,9 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.exception;
 
-import graphql.ErrorClassification;
-import graphql.GraphQLError;
-import graphql.language.SourceLocation;
-import java.util.List;
+import com.deizon.services.exception.BaseException;
 
-public class MissingDeployDataException extends RuntimeException
-        implements GraphQLError, APIException {
+public class MissingDeployDataException extends BaseException {
 
     public MissingDeployDataException() {
         super("Deploy data are missing!");
@@ -15,20 +11,5 @@ public class MissingDeployDataException extends RuntimeException
 
     public MissingDeployDataException(String message) {
         super(message);
-    }
-
-    @Override
-    public String getMessage() {
-        return super.getMessage();
-    }
-
-    @Override
-    public List<SourceLocation> getLocations() {
-        return null;
-    }
-
-    @Override
-    public ErrorClassification getErrorType() {
-        return null;
     }
 }

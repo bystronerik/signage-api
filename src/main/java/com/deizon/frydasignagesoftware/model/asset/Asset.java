@@ -1,8 +1,9 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.asset;
 
-import com.deizon.services.model.Validity;
 import com.deizon.services.model.Entity;
+import com.deizon.services.model.Validity;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -28,6 +29,12 @@ public class Asset extends Entity {
 
     private String directory;
     private List<String> tags;
+
+    public List<String> getTags() {
+        if (this.tags == null) this.tags = new ArrayList<>();
+
+        return this.tags;
+    }
 
     public enum Type {
         IMAGE_PNG("image/png"),

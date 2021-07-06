@@ -1,13 +1,9 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.exception;
 
-import graphql.ErrorType;
-import graphql.GraphQLError;
-import graphql.language.SourceLocation;
-import java.util.List;
+import com.deizon.services.exception.BaseException;
 
-public class BadCredentialsException extends RuntimeException
-        implements GraphQLError, APIException {
+public class BadCredentialsException extends BaseException {
 
     public BadCredentialsException() {
         super("Bad username or password!");
@@ -15,20 +11,5 @@ public class BadCredentialsException extends RuntimeException
 
     public BadCredentialsException(String message) {
         super(message);
-    }
-
-    @Override
-    public String getMessage() {
-        return super.getMessage();
-    }
-
-    @Override
-    public List<SourceLocation> getLocations() {
-        return null;
-    }
-
-    @Override
-    public ErrorType getErrorType() {
-        return null;
     }
 }

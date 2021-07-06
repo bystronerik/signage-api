@@ -1,8 +1,8 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.alert;
 
-import com.deizon.services.model.Validity;
 import com.deizon.services.model.Entity;
+import com.deizon.services.model.Validity;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 

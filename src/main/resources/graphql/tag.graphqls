@@ -28,5 +28,6 @@ extend type Query {
 extend type Mutation {
     createTag(data: CreateTagInput!): Tag!
     updateTag(id: ID!, data: UpdateTagInput!): Tag!
-    deleteTag(id: ID!): Boolean!
+    deleteTag(id: ID!): Tag!
+    totalDeleteTag(id: ID!): Boolean!
 }

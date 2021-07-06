@@ -10,6 +10,16 @@ type AssetList {
     assets: [AssetEntry]
 }
 
+type AssetEntry {
+    id: ID!
+    asset: Asset!
+    validity: Validity!
+    showTime: Int
+    animationIn: Style
+    animationOut: Style
+    position: Int
+}
+
 input CreateAssetListInput {
     name: String!
     type: String!
@@ -61,7 +71,8 @@ extend type Query {
 extend type Mutation {
     createAssetList(data: CreateAssetListInput!): AssetList!
     updateAssetList(id: ID!, data: UpdateAssetListInput!): AssetList!
-    deleteAssetList(id: ID!): Boolean!
+    deleteAssetList(id: ID!): AssetList!
+    totalDeleteAssetList(id: ID!): Boolean!
 
     assignAssetToAssetList(id: ID!, data: AssetAssignInput!): AssetList!
     removeAssetFromAssetList(id: ID!, assetEntry: ID!): AssetList!

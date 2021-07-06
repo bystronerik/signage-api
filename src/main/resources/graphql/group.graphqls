@@ -30,5 +30,6 @@ extend type Query {
 extend type Mutation {
     createGroup(data: CreateGroupInput!): Group!
     updateGroup(id: ID!, data: UpdateGroupInput!): Group!
-    deleteGroup(id: ID!): Boolean!
+    deleteGroup(id: ID!): Group!
+    totalDeleteGroup(id: ID!): Boolean!
 }

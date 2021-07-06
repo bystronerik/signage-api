@@ -28,5 +28,6 @@ extend type Query {
 extend type Mutation {
     createDirectory(data: CreateDirectoryInput!): Directory!
     updateDirectory(id: ID!, data: UpdateDirectoryInput!): Directory!
-    deleteDirectory(id: ID!): Boolean!
+    deleteDirectory(id: ID!): Directory!
+    totalDeleteDirectory(id: ID!): Boolean!
 }

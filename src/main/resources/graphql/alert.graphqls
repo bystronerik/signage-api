@@ -64,5 +64,6 @@ extend type Query {
 extend type Mutation {
     createAlert(data: CreateAlertInput!): Alert!
     updateAlert(id: ID!, data: UpdateAlertInput!): Alert!
-    deleteAlert(id: ID!): Boolean!
+    deleteAlert(id: ID!): Alert!
+    totalDeleteAlert(id: ID!): Boolean!
 }

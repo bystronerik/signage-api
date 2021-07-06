@@ -1,10 +1,9 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.asset;
 
-import java.time.Instant;
-import java.util.List;
-
+import com.deizon.services.model.ListChange;
 import com.deizon.services.model.ValidityInput;
+import java.time.Instant;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,5 +19,6 @@ public class UpdateAssetInput implements ValidityInput {
     private Instant validFrom;
     private Instant validTo;
     private String directory;
-    private List<String> tags;
+    private String alert;
+    private ListChange tags;
 }

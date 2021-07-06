@@ -1,7 +1,6 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver;
 
-import com.deizon.frydasignagesoftware.exception.ItemNotFoundException;
 import com.deizon.frydasignagesoftware.exception.MissingDeployDataException;
 import com.deizon.frydasignagesoftware.model.AssetEntry;
 import com.deizon.frydasignagesoftware.model.alert.Alert;
@@ -10,6 +9,7 @@ import com.deizon.frydasignagesoftware.model.deploydata.PlayerData;
 import com.deizon.frydasignagesoftware.model.group.Group;
 import com.deizon.frydasignagesoftware.model.player.Player;
 import com.deizon.frydasignagesoftware.repository.*;
+import com.deizon.services.exception.ItemNotFoundException;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import java.util.ArrayList;
@@ -43,13 +43,20 @@ public class DeployDataResolver implements GraphQLQueryResolver, GraphQLMutation
         final List<AssetEntry> assets = new ArrayList<>();
         final List<AssetEntry> priorityAssets = new ArrayList<>();
 
-        final Player player =
-                playerRepository
-                        .findByToken(token)
-                        .orElseThrow(() -> new ItemNotFoundException(Player.class));
+        final String groupId;
+        if (token.startsWith("GID-")) {
+            groupId = token.replace("GID-", "");
+        } else {
+            groupId =
+                    playerRepository
+                            .findByToken(token)
+                            .orElseThrow(() -> new ItemNotFoundException(Player.class))
+                            .getGroup();
+        }
+
         final Group group =
                 groupRepository
-                        .findById(player.getGroup())
+                        .findById(groupId)
                         .orElseThrow(() -> new ItemNotFoundException(Group.class));
 
         if (group.getAssetLists() != null && !group.getAssetLists().isEmpty()) {

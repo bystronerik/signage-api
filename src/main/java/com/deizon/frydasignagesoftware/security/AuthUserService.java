@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class AuthUserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final SecurityProperties properties;

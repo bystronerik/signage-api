@@ -12,8 +12,6 @@ import com.deizon.services.util.ExampleBuilder;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-
 @Service
 public class GroupService
         extends BaseService<
@@ -36,10 +34,12 @@ public class GroupService
 
     @Override
     protected Group processData(Group entity, UpdateGroupInput data) {
-        return super.processData(new EntityBuilder<>(entity)
-                .stringField(data::getName, entity::setName)
-                .listField(data::getAssetLists, entity::getAssetLists)
-                .stringField(data::getAlert, entity::setAlert)
-                .getEntity(), data);
+        return super.processData(
+                new EntityBuilder<>(entity)
+                        .stringField(data::getName, entity::setName)
+                        .listField(data::getAssetLists, entity::getAssetLists)
+                        .stringField(data::getAlert, entity::setAlert)
+                        .getEntity(),
+                data);
     }
 }

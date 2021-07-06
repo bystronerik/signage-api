@@ -12,8 +12,6 @@ import com.deizon.services.util.ExampleBuilder;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-
 @Service
 public class PlayerService
         extends BaseService<
@@ -37,10 +35,12 @@ public class PlayerService
 
     @Override
     protected Player processData(Player entity, UpdatePlayerInput data) {
-        return super.processData(new EntityBuilder<>(entity)
-                .stringField(data::getName, entity::setName)
-                .stringField(data::getToken, entity::setToken)
-                .stringField(data::getGroup, entity::setGroup)
-                .getEntity(), data);
+        return super.processData(
+                new EntityBuilder<>(entity)
+                        .stringField(data::getName, entity::setName)
+                        .stringField(data::getToken, entity::setToken)
+                        .stringField(data::getGroup, entity::setGroup)
+                        .getEntity(),
+                data);
     }
 }

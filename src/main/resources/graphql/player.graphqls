@@ -32,5 +32,6 @@ extend type Query {
 extend type Mutation {
     createPlayer(data: CreatePlayerInput!): Player!
     updatePlayer(id: ID!, data: UpdatePlayerInput!): Player!
-    deletePlayer(id: ID!): Boolean!
+    deletePlayer(id: ID!): Player!
+    totalDeletePlayer(id: ID!): Boolean!
 }

@@ -5,7 +5,7 @@ import com.deizon.frydasignagesoftware.exception.BadCredentialsException;
 import com.deizon.frydasignagesoftware.model.auth.LoginDetails;
 import com.deizon.frydasignagesoftware.model.user.User;
 import com.deizon.frydasignagesoftware.repository.UserRepository;
-import com.deizon.frydasignagesoftware.security.UserService;
+import com.deizon.frydasignagesoftware.security.AuthUserService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class BasicResolver implements GraphQLQueryResolver, GraphQLMutationResol
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
+    private final AuthUserService authUserService;
 
     @PreAuthorize("isAnonymous()")
     public LoginDetails login(String username, String password, Boolean shortSession) {
@@ -28,7 +28,7 @@ public class BasicResolver implements GraphQLQueryResolver, GraphQLMutationResol
                 userRepository.findByUsername(username).orElseThrow(BadCredentialsException::new);
 
         if (passwordEncoder.matches(password, user.getPassword())) {
-            return new LoginDetails(user, userService.getTokenObject(user, shortSession));
+            return new LoginDetails(user, authUserService.getTokenObject(user, shortSession));
         } else {
             throw new BadCredentialsException();
         }

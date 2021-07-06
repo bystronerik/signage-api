@@ -1,9 +1,8 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.assetlist;
 
-import java.time.Instant;
-
 import com.deizon.services.model.ValidityInput;
+import java.time.Instant;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

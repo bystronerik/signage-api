@@ -1,19 +1,24 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.service;
 
-import com.deizon.frydasignagesoftware.exception.ItemNotFoundException;
 import com.deizon.frydasignagesoftware.model.AssetEntry;
-import com.deizon.services.model.Validity;
+import com.deizon.frydasignagesoftware.model.asset.Asset;
+import com.deizon.frydasignagesoftware.model.asset.FindAssetInput;
 import com.deizon.frydasignagesoftware.model.assetlist.*;
 import com.deizon.frydasignagesoftware.repository.AssetListRepository;
+import com.deizon.frydasignagesoftware.repository.AssetRepository;
+import com.deizon.services.exception.ItemNotFoundException;
+import com.deizon.services.model.Validity;
 import com.deizon.services.service.BaseService;
 import com.deizon.services.util.EntityBuilder;
 import com.deizon.services.util.ExampleBuilder;
-import org.springframework.data.domain.Example;
-import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Example;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AssetListService
@@ -24,8 +29,12 @@ public class AssetListService
                 FindAssetListInput,
                 AssetListRepository> {
 
-    public AssetListService(AssetListRepository repository) {
+    private final AssetService assetService;
+
+    public AssetListService(AssetListRepository repository, AssetService assetService) {
         super(AssetList.class, repository, CreateAssetListInput.class, UpdateAssetListInput.class);
+
+        this.assetService = assetService;
     }
 
     @Override
@@ -44,19 +53,21 @@ public class AssetListService
 
     @Override
     protected AssetList processData(AssetList entity, UpdateAssetListInput data) {
-        return super.processData(new EntityBuilder<>(entity)
-                .stringField(data::getName, entity::setName)
-                .stringField(data::getType, entity::setType)
-                .booleanField(data::getPrioritized, entity::setPrioritized)
-                .booleanField(data::getEnabled, entity::setEnabled)
-                .stringField(data::getAnimationIn, entity::setAnimationIn)
-                .stringField(data::getAnimationOut, entity::setAnimationOut)
-                .objectField(data::getValidity, (val) -> entity.setValidity((Validity) val))
-                .getEntity(), data);
+        return super.processData(
+                new EntityBuilder<>(entity)
+                        .stringField(data::getName, entity::setName)
+                        .stringField(data::getType, entity::setType)
+                        .booleanField(data::getPrioritized, entity::setPrioritized)
+                        .booleanField(data::getEnabled, entity::setEnabled)
+                        .stringField(data::getAnimationIn, entity::setAnimationIn)
+                        .stringField(data::getAnimationOut, entity::setAnimationOut)
+                        .objectField(data::getValidity, (val) -> entity.setValidity((Validity) val))
+                        .getEntity(),
+                data);
     }
 
     public AssetList assignAssetToAssetList(String id, AssetAssignInput data) {
-        //TODO potřeba dodělat i update metodu a ta bude podle ID assignu editovat
+        // TODO potřeba dodělat i update metodu a ta bude podle ID assignu editovat
         final AssetList assetList =
                 this.repository
                         .findById(id)
@@ -67,12 +78,37 @@ public class AssetListService
             assetList.setAssets(new ArrayList<>());
         }
 
-        final AssetEntry assetEntry = new AssetEntry();
-        assetEntry.setPosition(data.getPosition());
-        assetEntry.setAsset(data.getAsset());
-        assetEntry.setValidity(data.getValidity());
+        final List<String> assets = new ArrayList<>();
+        if (data.getAsset().startsWith("dir")) {
+            final FindAssetInput input = new FindAssetInput();
+            input.setDirectory(data.getAsset().substring(4));
+            assets.addAll(((List<Asset>) this.assetService.findAll(input))
+                    .stream()
+                    .map(Asset::getId)
+                    .collect(Collectors.toList()));
+        } else {
+            assets.add(data.getAsset());
+        }
 
-        assetList.getAssets().add(assetEntry);
+        final Validity validity;
+        if (data.getValidity() != null) {
+            validity = data.getValidity();
+        } else {
+            validity = new Validity();
+            validity.setEnabled(false);
+        }
+
+        assets.forEach(item -> {
+            final AssetEntry assetEntry = new AssetEntry();
+            assetEntry.setPosition(data.getPosition());
+            assetEntry.setAsset(item);
+            assetEntry.setValidity(validity);
+            assetEntry.setAnimationIn(data.getAnimationIn());
+            assetEntry.setAnimationOut(data.getAnimationOut());
+            assetEntry.setShowTime(data.getShowTime());
+
+            assetList.getAssets().add(assetEntry);
+        });
 
         return this.repository.save(assetList);
     }
@@ -88,5 +124,4 @@ public class AssetListService
 
         return this.repository.save(assetList);
     }
-
 }

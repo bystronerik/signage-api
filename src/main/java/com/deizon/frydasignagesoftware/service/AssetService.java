@@ -2,8 +2,6 @@
 package com.deizon.frydasignagesoftware.service;
 
 import com.deizon.frydasignagesoftware.exception.UnsupportedFileType;
-import com.deizon.services.model.FileUpload;
-import com.deizon.services.model.Validity;
 import com.deizon.frydasignagesoftware.model.asset.Asset;
 import com.deizon.frydasignagesoftware.model.asset.CreateAssetInput;
 import com.deizon.frydasignagesoftware.model.asset.FindAssetInput;
@@ -11,19 +9,18 @@ import com.deizon.frydasignagesoftware.model.asset.UpdateAssetInput;
 import com.deizon.frydasignagesoftware.repository.AssetListRepository;
 import com.deizon.frydasignagesoftware.repository.AssetRepository;
 import com.deizon.services.exception.ItemNotFoundException;
+import com.deizon.services.model.FileUpload;
+import com.deizon.services.model.Validity;
 import com.deizon.services.service.BaseService;
 import com.deizon.services.util.EntityBuilder;
 import com.deizon.services.util.ExampleBuilder;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.List;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Example;
 import org.springframework.http.MediaType;
@@ -34,15 +31,17 @@ public class AssetService
         extends BaseService<
                 Asset, CreateAssetInput, UpdateAssetInput, FindAssetInput, AssetRepository> {
 
+    private final AssetListRepository assetListRepository;
     private final ResourceLoader resourceLoader;
-    private final Environment environment;
 
-    public AssetService(AssetRepository assetRepository,
-                        ResourceLoader resourceLoader, Environment environment) {
+    public AssetService(
+            AssetRepository assetRepository,
+            AssetListRepository assetListRepository,
+            ResourceLoader resourceLoader) {
         super(Asset.class, assetRepository, CreateAssetInput.class, UpdateAssetInput.class);
 
+        this.assetListRepository = assetListRepository;
         this.resourceLoader = resourceLoader;
-        this.environment = environment;
     }
 
     public Asset create(CreateAssetInput input, FileUpload file) throws IOException {
@@ -56,13 +55,32 @@ public class AssetService
     }
 
     public Asset update(String id, UpdateAssetInput input, FileUpload file) throws IOException {
-        final Asset entity = this.repository.findById(id).orElseThrow(() -> new ItemNotFoundException(this.entityClass));
+        final Asset entity =
+                this.repository
+                        .findById(id)
+                        .orElseThrow(() -> new ItemNotFoundException(this.entityClass));
 
         if (file != null) {
             this.processAssetFile(entity, file);
         }
 
         return this.processData(entity, input);
+    }
+
+    @Override
+    public Asset delete(String id) {
+        assetListRepository
+                .findAllByAsset(id)
+                .forEach(
+                        assetList -> {
+                            assetList
+                                    .getAssets()
+                                    .removeIf(assetEntry -> assetEntry.getAsset().equals(id));
+                            assetList.setUpdateDate(Instant.now());
+                            assetListRepository.save(assetList);
+                        });
+
+        return super.delete(id);
     }
 
     @Override
@@ -84,13 +102,18 @@ public class AssetService
     @Override
     protected Asset processData(Asset entity, UpdateAssetInput data) {
         final Asset finalEntity = entity;
-        entity = new EntityBuilder<>(entity)
-                .stringField(data::getName, entity::setName)
-                .integerField(data::getShowTime, entity::setShowTime)
-                .objectField(data::getValidity, (val) -> finalEntity.setValidity((Validity) val))
-                .stringField(data::getAnimationIn, entity::setAnimationIn)
-                .stringField(data::getAnimationOut, entity::setAnimationOut)
-                .getEntity();
+        entity =
+                new EntityBuilder<>(entity)
+                        .stringField(data::getName, entity::setName)
+                        .integerField(data::getShowTime, entity::setShowTime)
+                        .objectField(
+                                data::getValidity, (val) -> finalEntity.setValidity((Validity) val))
+                        .stringField(data::getAnimationIn, entity::setAnimationIn)
+                        .stringField(data::getAnimationOut, entity::setAnimationOut)
+                        .listField(data::getTags, entity::getTags)
+                        .stringField(data::getDirectory, entity::setDirectory)
+                        .stringField(data::getAlert, entity::setAlert)
+                        .getEntity();
         return super.processData(entity, data);
     }
 
@@ -129,16 +152,11 @@ public class AssetService
             IOUtils.copy(file.getContent(), out);
         }
 
-        entity.setPath(getPublicURL(fileName));
+        entity.setPath(fileName);
     }
 
     private File getLocation(String filename) throws IOException {
         return new File(resourceLoader.getResource("file:./data/").getFile(), filename);
-    }
-
-    public String getPublicURL(String fileLocation) {
-        return MessageFormat.format(
-                "{0}/storage/{1}", environment.getRequiredProperty("api.location"), fileLocation);
     }
 
     private String getType(String mimetype) {

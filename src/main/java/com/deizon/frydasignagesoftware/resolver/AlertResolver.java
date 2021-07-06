@@ -1,17 +1,13 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver;
 
-import com.deizon.frydasignagesoftware.exception.ItemNotFoundException;
-import com.deizon.services.model.Validity;
 import com.deizon.frydasignagesoftware.model.alert.Alert;
 import com.deizon.frydasignagesoftware.model.alert.CreateAlertInput;
 import com.deizon.frydasignagesoftware.model.alert.FindAlertInput;
 import com.deizon.frydasignagesoftware.model.alert.UpdateAlertInput;
-import com.deizon.frydasignagesoftware.repository.AlertRepository;
 import com.deizon.frydasignagesoftware.service.AlertService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import graphql.kickstart.tools.GraphQLQueryResolver;
-import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;

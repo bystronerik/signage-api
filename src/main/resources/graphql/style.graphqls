@@ -35,5 +35,6 @@ extend type Query {
 extend type Mutation {
     createStyle(data: CreateStyleInput!): Style!
     updateStyle(id: ID!, data: UpdateStyleInput!): Style!
-    deleteStyle(id: ID!): Boolean!
+    deleteStyle(id: ID!): Style!
+    totalDeleteStyle(id: ID!): Boolean!
 }

@@ -3,11 +3,11 @@ package com.deizon.frydasignagesoftware.model;
 
 import com.deizon.services.model.Validity;
 import lombok.*;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class AssetEntry {
 
@@ -18,4 +18,9 @@ public class AssetEntry {
     private String animationIn;
     private String animationOut;
     private Integer position;
+
+    public AssetEntry() {
+        this.id = new ObjectId().toString();
+    }
+
 }

@@ -12,8 +12,6 @@ import com.deizon.services.util.ExampleBuilder;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-
 @Service
 public class StyleService
         extends BaseService<
@@ -41,11 +39,15 @@ public class StyleService
 
     @Override
     protected Style processData(Style entity, UpdateStyleInput data) {
-        return super.processData(new EntityBuilder<>(entity)
-                .stringField(data::getName, entity::setName)
-                .enumField(data::getType, (val) -> entity.setType((Style.Type) val))
-                .enumField(data::getValueType, (val) -> entity.setValueType((Style.ValueType) val))
-                .stringField(data::getValue, entity::setValue)
-                .getEntity(), data);
+        return super.processData(
+                new EntityBuilder<>(entity)
+                        .stringField(data::getName, entity::setName)
+                        .enumField(data::getType, (val) -> entity.setType((Style.Type) val))
+                        .enumField(
+                                data::getValueType,
+                                (val) -> entity.setValueType((Style.ValueType) val))
+                        .stringField(data::getValue, entity::setValue)
+                        .getEntity(),
+                data);
     }
 }

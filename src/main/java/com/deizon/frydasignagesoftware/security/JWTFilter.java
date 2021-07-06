@@ -24,7 +24,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final Pattern BEARER_PATTERN = Pattern.compile("^Bearer (.+?)$");
-    private final UserService userService;
+    private final AuthUserService authUserService;
 
     @Override
     protected void doFilterInternal(
@@ -33,7 +33,7 @@ public class JWTFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws IOException, ServletException {
         getToken(request)
-                .map(userService::loadUserByToken)
+                .map(authUserService::loadUserByToken)
                 .map(
                         userDetails ->
                                 JWTPreAuthenticationToken.builder()

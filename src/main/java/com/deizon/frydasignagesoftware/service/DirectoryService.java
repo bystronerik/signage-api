@@ -1,8 +1,6 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.service;
 
-import com.deizon.services.model.Validity;
-import com.deizon.frydasignagesoftware.model.alert.Alert;
 import com.deizon.frydasignagesoftware.model.directory.CreateDirectoryInput;
 import com.deizon.frydasignagesoftware.model.directory.Directory;
 import com.deizon.frydasignagesoftware.model.directory.FindDirectoryInput;
@@ -13,8 +11,6 @@ import com.deizon.services.util.EntityBuilder;
 import com.deizon.services.util.ExampleBuilder;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
 
 @Service
 public class DirectoryService
@@ -37,16 +33,17 @@ public class DirectoryService
                 .stringField("id", input::getId, data::setId)
                 .stringField("name", input::getName, data::setName)
                 .stringField("parentDirectory", input::getParentDirectory, data::setParentDirectory)
-                .booleanField("deleted", () -> false, data::setDeleted)
+                // .booleanField("deleted", () -> false, data::setDeleted)
                 .create();
     }
 
     @Override
     protected Directory processData(Directory entity, UpdateDirectoryInput data) {
-        return super.processData(new EntityBuilder<>(entity)
-                .stringField(data::getName, entity::setName)
-                .stringField(data::getParentDirectory, entity::setParentDirectory)
-                .getEntity(), data);
+        return super.processData(
+                new EntityBuilder<>(entity)
+                        .stringField(data::getName, entity::setName)
+                        .stringField(data::getParentDirectory, entity::setParentDirectory)
+                        .getEntity(),
+                data);
     }
-
 }

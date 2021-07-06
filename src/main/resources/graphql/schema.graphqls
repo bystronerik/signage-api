@@ -16,15 +16,6 @@ type Token {
     expiresIn: Date
 }
 
-type AssetEntry {
-    asset: Asset!
-    validity: Validity!
-    showTime: Int
-    animationIn: Style
-    animationOut: Style
-    position: Int
-}
-
 type Validity {
     enabled: Boolean!
     from: Date

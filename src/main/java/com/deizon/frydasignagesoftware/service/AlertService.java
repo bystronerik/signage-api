@@ -1,12 +1,12 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.service;
 
-import com.deizon.services.model.Validity;
 import com.deizon.frydasignagesoftware.model.alert.Alert;
 import com.deizon.frydasignagesoftware.model.alert.CreateAlertInput;
 import com.deizon.frydasignagesoftware.model.alert.FindAlertInput;
 import com.deizon.frydasignagesoftware.model.alert.UpdateAlertInput;
 import com.deizon.frydasignagesoftware.repository.AlertRepository;
+import com.deizon.services.model.Validity;
 import com.deizon.services.service.BaseService;
 import com.deizon.services.util.EntityBuilder;
 import com.deizon.services.util.ExampleBuilder;
@@ -48,7 +48,7 @@ public class AlertService
                         .enumField(
                                 data::getPosition,
                                 (val) -> entity.setPosition((Alert.Position) val))
-                        .stringField(data::getValue, data::setValue)
+                        .stringField(data::getValue, entity::setValue)
                         .stringField(data::getBorders, entity::setBorders)
                         .stringField(data::getHeight, entity::setHeight)
                         .stringField(data::getBackground, entity::setBackground)

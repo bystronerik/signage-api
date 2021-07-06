@@ -12,8 +12,6 @@ import com.deizon.services.util.ExampleBuilder;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-
 @Service
 public class TagService
         extends BaseService<Tag, CreateTagInput, UpdateTagInput, FindTagInput, TagRepository> {
@@ -36,9 +34,11 @@ public class TagService
 
     @Override
     protected Tag processData(Tag entity, UpdateTagInput data) {
-        return super.processData(new EntityBuilder<>(entity)
-                .stringField(data::getName, entity::setName)
-                .enumField(data::getColor, (val) -> entity.setColor((Tag.Color) val))
-                .getEntity(), data);
+        return super.processData(
+                new EntityBuilder<>(entity)
+                        .stringField(data::getName, entity::setName)
+                        .enumField(data::getColor, (val) -> entity.setColor((Tag.Color) val))
+                        .getEntity(),
+                data);
     }
 }

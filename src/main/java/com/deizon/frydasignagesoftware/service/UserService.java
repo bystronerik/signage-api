@@ -41,29 +41,41 @@ public class UserService
 
     @Override
     protected User processData(User entity, UpdateUserInput data) {
-        return super.processData(new EntityBuilder<>(entity)
-                .stringField(() -> {
-                    if (data instanceof CreateUserInput) {
-                        if (this.repository.findByUsername(data.getUsername()).isPresent())
-                            throw new UserAlreadyExistsException();
-                    } else {
-                        if (data.getUsername() != null) {
-                            if (!entity.getUsername().equals(data.getUsername())) {
-                                if (this.repository.findByUsername(data.getUsername()).isPresent()) {
-                                    throw new UserAlreadyExistsException();
-                                }
-                            }
-                        }
-                    }
+        return super.processData(
+                new EntityBuilder<>(entity)
+                        .stringField(
+                                () -> {
+                                    if (data instanceof CreateUserInput) {
+                                        if (this.repository
+                                                .findByUsername(data.getUsername())
+                                                .isPresent())
+                                            throw new UserAlreadyExistsException();
+                                    } else {
+                                        if (data.getUsername() != null) {
+                                            if (!entity.getUsername().equals(data.getUsername())) {
+                                                if (this.repository
+                                                        .findByUsername(data.getUsername())
+                                                        .isPresent()) {
+                                                    throw new UserAlreadyExistsException();
+                                                }
+                                            }
+                                        }
+                                    }
 
-                    return data.getUsername();
-                }, entity::setUsername)
-                .stringField(() -> passwordEncoder.encode(data.getPassword()), entity::setPassword)
-                .enumField(() -> {
-                    if (data instanceof CreateUserInput && data.getRole() == null)
-                        return User.Role.USER;
-                    return data.getRole();
-                }, (val) -> entity.setRole((User.Role) val))
-                .getEntity(), data);
+                                    return data.getUsername();
+                                },
+                                entity::setUsername)
+                        .stringField(
+                                () -> passwordEncoder.encode(data.getPassword()),
+                                entity::setPassword)
+                        .enumField(
+                                () -> {
+                                    if (data instanceof CreateUserInput && data.getRole() == null)
+                                        return User.Role.USER;
+                                    return data.getRole();
+                                },
+                                (val) -> entity.setRole((User.Role) val))
+                        .getEntity(),
+                data);
     }
 }

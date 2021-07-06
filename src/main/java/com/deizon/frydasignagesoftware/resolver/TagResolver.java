@@ -1,7 +1,6 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver;
 
-import com.deizon.frydasignagesoftware.exception.ItemNotFoundException;
 import com.deizon.frydasignagesoftware.model.tag.CreateTagInput;
 import com.deizon.frydasignagesoftware.model.tag.FindTagInput;
 import com.deizon.frydasignagesoftware.model.tag.Tag;
@@ -10,7 +9,6 @@ import com.deizon.frydasignagesoftware.repository.*;
 import com.deizon.frydasignagesoftware.service.TagService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import graphql.kickstart.tools.GraphQLQueryResolver;
-import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
