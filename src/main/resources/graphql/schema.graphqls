@@ -23,6 +23,8 @@ type Validity {
 }
 
 scalar Date
+scalar DataType
+scalar FileType
 scalar FileUpload
 
 input ListChange {

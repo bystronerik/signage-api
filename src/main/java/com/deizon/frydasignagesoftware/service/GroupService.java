@@ -26,9 +26,9 @@ public class GroupService
         final Group data = new Group();
         return new ExampleBuilder<>(data)
                 .exact()
-                .stringField("id", input::getId, data::setId)
-                .stringField("name", input::getName, data::setName)
-                .booleanField("deleted", () -> false, data::setDeleted)
+                .field("id", input::getId, data::setId)
+                .field("name", input::getName, data::setName)
+                .field("deleted", () -> false, data::setDeleted)
                 .create();
     }
 
@@ -36,9 +36,9 @@ public class GroupService
     protected Group processData(Group entity, UpdateGroupInput data) {
         return super.processData(
                 new EntityBuilder<>(entity)
-                        .stringField(data::getName, entity::setName)
+                        .field(data::getName, entity::setName)
                         .listField(data::getAssetLists, entity::getAssetLists)
-                        .stringField(data::getAlert, entity::setAlert)
+                        .field(data::getAlert, entity::setAlert)
                         .getEntity(),
                 data);
     }

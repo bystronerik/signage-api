@@ -5,7 +5,6 @@ import com.deizon.frydasignagesoftware.model.player.CreatePlayerInput;
 import com.deizon.frydasignagesoftware.model.player.FindPlayerInput;
 import com.deizon.frydasignagesoftware.model.player.Player;
 import com.deizon.frydasignagesoftware.model.player.UpdatePlayerInput;
-import com.deizon.frydasignagesoftware.repository.PlayerRepository;
 import com.deizon.frydasignagesoftware.service.PlayerService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import graphql.kickstart.tools.GraphQLQueryResolver;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 @PreAuthorize("isAuthenticated()")
 public class PlayerResolver implements GraphQLQueryResolver, GraphQLMutationResolver {
 
-    private final PlayerRepository playerRepository;
     private final PlayerService service;
 
     public Iterable<Player> findAllPlayers(FindPlayerInput input) {

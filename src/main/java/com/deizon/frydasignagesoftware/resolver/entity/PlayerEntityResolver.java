@@ -5,20 +5,24 @@ import com.deizon.frydasignagesoftware.model.group.Group;
 import com.deizon.frydasignagesoftware.model.player.Player;
 import com.deizon.frydasignagesoftware.repository.GroupRepository;
 import com.deizon.services.exception.ItemNotFoundException;
-import graphql.kickstart.tools.GraphQLResolver;
+import com.deizon.services.resolver.BaseResolver;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class PlayerEntityResolver implements GraphQLResolver<Player> {
+public class PlayerEntityResolver extends BaseResolver<Player> {
 
     private final GroupRepository groupRepository;
 
-    public Group getGroup(Player player) {
-        if (player.getGroup() == null) return null;
-        return groupRepository
-                .findById(player.getGroup())
-                .orElseThrow(() -> new ItemNotFoundException(Group.class));
+    public CompletableFuture<Group> getGroup(Player player) {
+        return this.processAsync(
+                () -> {
+                    if (player.getGroup() == null) return null;
+                    return groupRepository
+                            .findById(player.getGroup())
+                            .orElseThrow(() -> new ItemNotFoundException(Group.class));
+                });
     }
 }

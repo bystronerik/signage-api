@@ -17,4 +17,8 @@ public interface DirectoryRepository extends MongoRepository<Directory, String> 
     @Override
     @Query("{'id': ?0, 'deleted': false}")
     Optional<Directory> findById(@NotNull String id);
+
+    @NotNull
+    @Query("{'parentDirectory': 'root', 'deleted': false}")
+    Optional<Directory> findRoot();
 }

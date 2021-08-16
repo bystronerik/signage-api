@@ -7,29 +7,36 @@ import com.deizon.frydasignagesoftware.model.group.Group;
 import com.deizon.frydasignagesoftware.repository.AlertRepository;
 import com.deizon.frydasignagesoftware.repository.AssetListRepository;
 import com.deizon.services.exception.ItemNotFoundException;
-import graphql.kickstart.tools.GraphQLResolver;
+import com.deizon.services.resolver.BaseResolver;
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class GroupEntityResolver implements GraphQLResolver<Group> {
+public class GroupEntityResolver extends BaseResolver<Group> {
 
     private final AssetListRepository assetListRepository;
     private final AlertRepository alertRepository;
 
-    public Iterable<AssetList> getAssetLists(Group group) {
-        if (group.getAssetLists() == null) return new ArrayList<>();
+    public CompletableFuture<Iterable<AssetList>> getAssetLists(Group group) {
+        return this.processAsync(
+                () -> {
+                    if (group.getAssetLists() == null) return new ArrayList<>();
 
-        return assetListRepository.findAllById(group.getAssetLists());
+                    return assetListRepository.findAllById(group.getAssetLists());
+                });
     }
 
-    public Alert getAlert(Group group) {
-        if (group.getAlert() == null) return null;
+    public CompletableFuture<Alert> getAlert(Group group) {
+        return this.processAsync(
+                () -> {
+                    if (group.getAlert() == null) return null;
 
-        return alertRepository
-                .findById(group.getAlert())
-                .orElseThrow(() -> new ItemNotFoundException(Alert.class));
+                    return alertRepository
+                            .findById(group.getAlert())
+                            .orElseThrow(() -> new ItemNotFoundException(Alert.class));
+                });
     }
 }

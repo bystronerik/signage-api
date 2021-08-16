@@ -26,14 +26,11 @@ public class StyleService
         final Style data = new Style();
         return new ExampleBuilder<>(data)
                 .exact()
-                .stringField("id", input::getId, data::setId)
-                .stringField("name", input::getName, data::setName)
-                .enumField("type", input::getType, (val) -> data.setType((Style.Type) val))
-                .enumField(
-                        "valueType",
-                        input::getValueType,
-                        (val) -> data.setValueType((Style.ValueType) val))
-                .booleanField("deleted", () -> false, data::setDeleted)
+                .field("id", input::getId, data::setId)
+                .field("name", input::getName, data::setName)
+                .field("type", input::getType, data::setType)
+                .field("valueType", input::getValueType, data::setValueType)
+                .field("deleted", () -> false, data::setDeleted)
                 .create();
     }
 
@@ -41,12 +38,10 @@ public class StyleService
     protected Style processData(Style entity, UpdateStyleInput data) {
         return super.processData(
                 new EntityBuilder<>(entity)
-                        .stringField(data::getName, entity::setName)
-                        .enumField(data::getType, (val) -> entity.setType((Style.Type) val))
-                        .enumField(
-                                data::getValueType,
-                                (val) -> entity.setValueType((Style.ValueType) val))
-                        .stringField(data::getValue, entity::setValue)
+                        .field(data::getName, entity::setName)
+                        .field(data::getType, entity::setType)
+                        .field(data::getValueType, entity::setValueType)
+                        .field(data::getValue, entity::setValue)
                         .getEntity(),
                 data);
     }

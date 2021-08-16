@@ -6,7 +6,6 @@ import com.deizon.frydasignagesoftware.model.alert.CreateAlertInput;
 import com.deizon.frydasignagesoftware.model.alert.FindAlertInput;
 import com.deizon.frydasignagesoftware.model.alert.UpdateAlertInput;
 import com.deizon.frydasignagesoftware.repository.AlertRepository;
-import com.deizon.services.model.Validity;
 import com.deizon.services.service.BaseService;
 import com.deizon.services.util.EntityBuilder;
 import com.deizon.services.util.ExampleBuilder;
@@ -27,15 +26,12 @@ public class AlertService
         final Alert data = new Alert();
         return new ExampleBuilder<>(data)
                 .exact()
-                .stringField("id", input::getId, data::setId)
-                .stringField("name", input::getName, data::setName)
-                .enumField("type", input::getType, (val) -> data.setType((Alert.Type) val))
-                .enumField(
-                        "position",
-                        input::getPosition,
-                        (val) -> data.setPosition((Alert.Position) val))
-                .stringField("value", input::getValue, data::setValue)
-                .booleanField("deleted", () -> false, data::setDeleted)
+                .field("id", input::getId, data::setId)
+                .field("name", input::getName, data::setName)
+                .field("type", input::getType, data::setType)
+                .field("position", input::getPosition, data::setPosition)
+                .field("value", input::getValue, data::setValue)
+                .field("deleted", () -> false, data::setDeleted)
                 .create();
     }
 
@@ -43,20 +39,18 @@ public class AlertService
     protected Alert processData(Alert entity, UpdateAlertInput data) {
         return super.processData(
                 new EntityBuilder<>(entity)
-                        .stringField(data::getName, entity::setName)
-                        .enumField(data::getType, (val) -> entity.setType((Alert.Type) val))
-                        .enumField(
-                                data::getPosition,
-                                (val) -> entity.setPosition((Alert.Position) val))
-                        .stringField(data::getValue, entity::setValue)
-                        .stringField(data::getBorders, entity::setBorders)
-                        .stringField(data::getHeight, entity::setHeight)
-                        .stringField(data::getBackground, entity::setBackground)
-                        .stringField(data::getTextColor, entity::setTextColor)
-                        .stringField(data::getTextPosition, entity::setTextPosition)
-                        .stringField(data::getTextSize, entity::setTextSize)
-                        .booleanField(data::getRunning, entity::setRunning)
-                        .objectField(data::getValidity, (val) -> entity.setValidity((Validity) val))
+                        .field(data::getName, entity::setName)
+                        .field(data::getType, entity::setType)
+                        .field(data::getPosition, entity::setPosition)
+                        .field(data::getValue, entity::setValue)
+                        .field(data::getBorders, entity::setBorders)
+                        .field(data::getHeight, entity::setHeight)
+                        .field(data::getBackground, entity::setBackground)
+                        .field(data::getTextColor, entity::setTextColor)
+                        .field(data::getTextPosition, entity::setTextPosition)
+                        .field(data::getTextSize, entity::setTextSize)
+                        .field(data::getRunning, entity::setRunning)
+                        .field(data::getValidity, entity::setValidity)
                         .getEntity(),
                 data);
     }

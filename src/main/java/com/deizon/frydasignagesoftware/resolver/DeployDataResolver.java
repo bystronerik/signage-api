@@ -30,18 +30,18 @@ public class DeployDataResolver implements GraphQLQueryResolver, GraphQLMutation
     private final AssetListRepository assetListRepository;
     private final AlertRepository alertRepository;
     private final StyleRepository styleRepository;
+    private final PlayerDataRepository playerDataRepository;
 
     @PreAuthorize("isAnonymous() || isAuthenticated()")
     public DeployData deployInfo() {
-        return deployDataRepository.findAll().stream()
+        return this.deployDataRepository.findAll().stream()
                 .findFirst()
                 .orElseThrow(MissingDeployDataException::new);
     }
 
     @PreAuthorize("isAnonymous() || isAuthenticated()")
     public PlayerData syncPlayer(String token) {
-        final List<AssetEntry> assets = new ArrayList<>();
-        final List<AssetEntry> priorityAssets = new ArrayList<>();
+        final DeployData deployInfo = deployInfo();
 
         final String groupId;
         if (token.startsWith("GID-")) {
@@ -59,73 +59,12 @@ public class DeployDataResolver implements GraphQLQueryResolver, GraphQLMutation
                         .findById(groupId)
                         .orElseThrow(() -> new ItemNotFoundException(Group.class));
 
-        if (group.getAssetLists() != null && !group.getAssetLists().isEmpty()) {
-            assetListRepository
-                    .findAllById(group.getAssetLists(), true)
-                    .forEach(
-                            playlist -> {
-                                if (playlist.getValidity() != null
-                                        && playlist.getValidity().getEnabled()) {
-                                    if (playlist.getValidity().isInPast()) {
-                                        return;
-                                    }
-                                }
-
-                                playlist.getAssets()
-                                        .forEach(
-                                                entry -> {
-                                                    if (entry.getValidity() != null
-                                                            && entry.getValidity().getEnabled()) {
-                                                        if (entry.getValidity().isInPast()) {
-                                                            return;
-                                                        }
-
-                                                        if (entry.getValidity().getEnabled()) {
-                                                            if (playlist.getValidity()
-                                                                    .getFrom()
-                                                                    .isAfter(
-                                                                            entry.getValidity()
-                                                                                    .getFrom())) {
-                                                                entry.getValidity()
-                                                                        .setFrom(
-                                                                                playlist.getValidity()
-                                                                                        .getFrom());
-                                                            }
-
-                                                            if (playlist.getValidity()
-                                                                    .getTo()
-                                                                    .isBefore(
-                                                                            entry.getValidity()
-                                                                                    .getTo())) {
-                                                                entry.getValidity()
-                                                                        .setTo(
-                                                                                playlist.getValidity()
-                                                                                        .getTo());
-                                                            }
-                                                        } else {
-                                                            entry.setValidity(
-                                                                    playlist.getValidity());
-                                                        }
-                                                    }
-
-                                                    if (playlist.getPrioritized()) {
-                                                        priorityAssets.add(entry);
-                                                    } else {
-                                                        assets.add(entry);
-                                                    }
-                                                });
-                            });
-        }
-
-        Alert alert = null;
-        if (group.getAlert() != null) {
-            alert =
-                    alertRepository
-                            .findById(group.getAlert())
-                            .orElseThrow(() -> new ItemNotFoundException(Alert.class));
-        }
-
-        return new PlayerData(assets, priorityAssets, alert, styleRepository.findAll());
+        return playerDataRepository
+                .findByVersion(group.getId(), deployInfo.getVersionHash())
+                .orElseThrow(
+                        () ->
+                                new ItemNotFoundException(
+                                        "Can not find player data, run deploy first!"));
     }
 
     public DeployData deploy() {
@@ -134,6 +73,100 @@ public class DeployDataResolver implements GraphQLQueryResolver, GraphQLMutation
 
         deployData.setVersionHash(RandomStringUtils.random(20, true, true));
 
-        return deployDataRepository.save(deployData);
+        this.groupRepository
+                .findAll()
+                .forEach(
+                        group -> {
+                            final List<AssetEntry> assets = new ArrayList<>();
+                            final List<AssetEntry> priorityAssets = new ArrayList<>();
+
+                            if (group.getAssetLists() != null && !group.getAssetLists().isEmpty()) {
+                                assetListRepository
+                                        .findAllById(group.getAssetLists(), true)
+                                        .forEach(
+                                                playlist -> {
+                                                    if (playlist.getValidity() != null
+                                                            && playlist.getValidity()
+                                                                    .getEnabled()) {
+                                                        if (playlist.getValidity().isInPast()) {
+                                                            return;
+                                                        }
+                                                    }
+
+                                                    playlist.getAssets()
+                                                            .forEach(
+                                                                    entry -> {
+                                                                        if (entry.getValidity()
+                                                                                        != null
+                                                                                && entry.getValidity()
+                                                                                        .getEnabled()) {
+                                                                            if (entry.getValidity()
+                                                                                    .isInPast()) {
+                                                                                return;
+                                                                            }
+
+                                                                            if (entry.getValidity()
+                                                                                    .getEnabled()) {
+                                                                                if (playlist.getValidity()
+                                                                                        .getFrom()
+                                                                                        .isAfter(
+                                                                                                entry.getValidity()
+                                                                                                        .getFrom())) {
+                                                                                    entry.getValidity()
+                                                                                            .setFrom(
+                                                                                                    playlist.getValidity()
+                                                                                                            .getFrom());
+                                                                                }
+
+                                                                                if (playlist.getValidity()
+                                                                                        .getTo()
+                                                                                        .isBefore(
+                                                                                                entry.getValidity()
+                                                                                                        .getTo())) {
+                                                                                    entry.getValidity()
+                                                                                            .setTo(
+                                                                                                    playlist.getValidity()
+                                                                                                            .getTo());
+                                                                                }
+                                                                            } else {
+                                                                                entry.setValidity(
+                                                                                        playlist
+                                                                                                .getValidity());
+                                                                            }
+                                                                        }
+
+                                                                        if (playlist
+                                                                                .getPrioritized()) {
+                                                                            priorityAssets.add(
+                                                                                    entry);
+                                                                        } else {
+                                                                            assets.add(entry);
+                                                                        }
+                                                                    });
+                                                });
+                            }
+
+                            Alert alert = null;
+                            if (group.getAlert() != null) {
+                                alert =
+                                        alertRepository
+                                                .findById(group.getAlert())
+                                                .orElseThrow(
+                                                        () ->
+                                                                new ItemNotFoundException(
+                                                                        Alert.class));
+                            }
+
+                            this.playerDataRepository.save(
+                                    new PlayerData(
+                                            group.getId(),
+                                            deployData.getVersionHash(),
+                                            assets,
+                                            priorityAssets,
+                                            alert,
+                                            styleRepository.findAll()));
+                        });
+
+        return this.deployDataRepository.save(deployData);
     }
 }

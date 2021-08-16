@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 @PreAuthorize("isAuthenticated()")
 public class AssetListResolver implements GraphQLQueryResolver, GraphQLMutationResolver {
 
-    private final AssetListRepository assetListRepository;
     private final AssetListService service;
 
     public Iterable<AssetList> findAllAssetLists(FindAssetListInput input) {

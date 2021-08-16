@@ -1,11 +1,11 @@
 /* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver;
 
-import com.deizon.frydasignagesoftware.exception.BadCredentialsException;
 import com.deizon.frydasignagesoftware.model.auth.LoginDetails;
 import com.deizon.frydasignagesoftware.model.user.User;
 import com.deizon.frydasignagesoftware.repository.UserRepository;
 import com.deizon.frydasignagesoftware.security.AuthUserService;
+import com.deizon.services.exception.BadCredentialsException;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import lombok.RequiredArgsConstructor;

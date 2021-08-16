@@ -5,7 +5,9 @@ import com.deizon.frydasignagesoftware.model.directory.CreateDirectoryInput;
 import com.deizon.frydasignagesoftware.model.directory.Directory;
 import com.deizon.frydasignagesoftware.model.directory.FindDirectoryInput;
 import com.deizon.frydasignagesoftware.model.directory.UpdateDirectoryInput;
+import com.deizon.frydasignagesoftware.repository.AssetRepository;
 import com.deizon.frydasignagesoftware.repository.DirectoryRepository;
+import com.deizon.services.exception.ItemNotFoundException;
 import com.deizon.services.service.BaseService;
 import com.deizon.services.util.EntityBuilder;
 import com.deizon.services.util.ExampleBuilder;
@@ -21,8 +23,11 @@ public class DirectoryService
                 FindDirectoryInput,
                 DirectoryRepository> {
 
-    public DirectoryService(DirectoryRepository repository) {
+    private final AssetRepository assetRepository;
+
+    public DirectoryService(DirectoryRepository repository, AssetRepository assetRepository) {
         super(Directory.class, repository, CreateDirectoryInput.class, UpdateDirectoryInput.class);
+        this.assetRepository = assetRepository;
     }
 
     @Override
@@ -30,10 +35,10 @@ public class DirectoryService
         final Directory data = new Directory();
         return new ExampleBuilder<>(data)
                 .exact()
-                .stringField("id", input::getId, data::setId)
-                .stringField("name", input::getName, data::setName)
-                .stringField("parentDirectory", input::getParentDirectory, data::setParentDirectory)
-                // .booleanField("deleted", () -> false, data::setDeleted)
+                .field("id", input::getId, data::setId)
+                .field("name", input::getName, data::setName)
+                .field("parentDirectory", input::getParentDirectory, data::setParentDirectory)
+                .field("deleted", () -> false, data::setDeleted)
                 .create();
     }
 
@@ -41,9 +46,31 @@ public class DirectoryService
     protected Directory processData(Directory entity, UpdateDirectoryInput data) {
         return super.processData(
                 new EntityBuilder<>(entity)
-                        .stringField(data::getName, entity::setName)
-                        .stringField(data::getParentDirectory, entity::setParentDirectory)
+                        .field(data::getName, entity::setName)
+                        .field(data::getParentDirectory, entity::setParentDirectory)
                         .getEntity(),
                 data);
+    }
+
+    @Override
+    public Directory delete(String id) {
+        final Directory data = super.delete(id);
+        final Directory root =
+                this.repository
+                        .findRoot()
+                        .orElseThrow(
+                                () ->
+                                        new ItemNotFoundException(
+                                                "Invalid directories state, can not find root directory."));
+
+        this.assetRepository
+                .findAllByDirectory(data.getId())
+                .forEach(
+                        item -> {
+                            item.setDirectory(root.getId());
+                            this.assetRepository.save(item);
+                        });
+
+        return data;
     }
 }

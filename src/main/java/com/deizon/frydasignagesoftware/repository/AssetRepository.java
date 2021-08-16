@@ -17,4 +17,8 @@ public interface AssetRepository extends MongoRepository<Asset, String> {
     @Override
     @Query("{'id': ?0, 'deleted': false}")
     Optional<Asset> findById(@NotNull String id);
+
+    @NotNull
+    @Query("{'directory': ?0, 'deleted': false}")
+    Iterable<Asset> findAllByDirectory(@NotNull String directory);
 }

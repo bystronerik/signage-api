@@ -25,11 +25,11 @@ public class PlayerService
         final Player data = new Player();
         return new ExampleBuilder<>(data)
                 .exact()
-                .stringField("id", input::getId, data::setId)
-                .stringField("name", input::getName, data::setName)
-                .stringField("token", input::getToken, data::setToken)
-                .stringField("group", input::getGroup, data::setGroup)
-                .booleanField("deleted", () -> false, data::setDeleted)
+                .field("id", input::getId, data::setId)
+                .field("name", input::getName, data::setName)
+                .field("token", input::getToken, data::setToken)
+                .field("group", input::getGroup, data::setGroup)
+                .field("deleted", () -> false, data::setDeleted)
                 .create();
     }
 
@@ -37,9 +37,9 @@ public class PlayerService
     protected Player processData(Player entity, UpdatePlayerInput data) {
         return super.processData(
                 new EntityBuilder<>(entity)
-                        .stringField(data::getName, entity::setName)
-                        .stringField(data::getToken, entity::setToken)
-                        .stringField(data::getGroup, entity::setGroup)
+                        .field(data::getName, entity::setName)
+                        .field(data::getToken, entity::setToken)
+                        .field(data::getGroup, entity::setGroup)
                         .getEntity(),
                 data);
     }

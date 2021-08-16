@@ -3,10 +3,11 @@ package com.deizon.frydasignagesoftware.resolver.entity;
 
 import com.deizon.frydasignagesoftware.model.user.User;
 import graphql.kickstart.tools.GraphQLResolver;
+import java.util.concurrent.CompletableFuture;
 
 public class UserEntityResolver implements GraphQLResolver<User> {
 
-    public String getRole(User user) {
-        return user.getRole().getName();
+    public CompletableFuture<String> getRole(User user) {
+        return CompletableFuture.completedFuture(user.getRole().getName());
     }
 }

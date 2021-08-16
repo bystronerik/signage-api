@@ -22,5 +22,4 @@ public class AssetEntry {
     public AssetEntry() {
         this.id = new ObjectId().toString();
     }
-
 }

@@ -31,11 +31,11 @@ public class UserService
         final User data = new User();
         return new ExampleBuilder<>(data)
                 .exact()
-                .stringField("id", input::getId, data::setId)
-                .stringField("username", input::getUsername, data::setUsername)
-                .stringField("password", input::getPassword, data::setPassword)
-                .enumField("role", input::getRole, (val) -> data.setRole((User.Role) val))
-                .booleanField("deleted", () -> false, data::setDeleted)
+                .field("id", input::getId, data::setId)
+                .field("username", input::getUsername, data::setUsername)
+                .field("password", input::getPassword, data::setPassword)
+                .field("role", input::getRole, data::setRole)
+                .field("deleted", () -> false, data::setDeleted)
                 .create();
     }
 
@@ -43,7 +43,7 @@ public class UserService
     protected User processData(User entity, UpdateUserInput data) {
         return super.processData(
                 new EntityBuilder<>(entity)
-                        .stringField(
+                        .field(
                                 () -> {
                                     if (data instanceof CreateUserInput) {
                                         if (this.repository
@@ -65,16 +65,16 @@ public class UserService
                                     return data.getUsername();
                                 },
                                 entity::setUsername)
-                        .stringField(
+                        .field(
                                 () -> passwordEncoder.encode(data.getPassword()),
                                 entity::setPassword)
-                        .enumField(
+                        .field(
                                 () -> {
                                     if (data instanceof CreateUserInput && data.getRole() == null)
                                         return User.Role.USER;
                                     return data.getRole();
                                 },
-                                (val) -> entity.setRole((User.Role) val))
+                                entity::setRole)
                         .getEntity(),
                 data);
     }

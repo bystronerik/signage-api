@@ -2,7 +2,7 @@ type Asset {
     id: ID!
     name: String!
     path: String!
-    type: String!
+    type: FileType!
     showTime: Int
     validity: Validity
     animationIn: Style
@@ -43,7 +43,7 @@ input FindAssetInput {
     id: ID
     name: String
     path: String
-    type: String
+    type: FileType
     directory: String
 }
 

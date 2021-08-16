@@ -25,10 +25,10 @@ public class TagService
         final Tag data = new Tag();
         return new ExampleBuilder<>(data)
                 .exact()
-                .stringField("id", input::getId, data::setId)
-                .stringField("name", input::getName, data::setName)
-                .enumField("color", input::getColor, (val) -> data.setColor((Tag.Color) val))
-                .booleanField("deleted", () -> false, data::setDeleted)
+                .field("id", input::getId, data::setId)
+                .field("name", input::getName, data::setName)
+                .field("color", input::getColor, data::setColor)
+                .field("deleted", () -> false, data::setDeleted)
                 .create();
     }
 
@@ -36,8 +36,8 @@ public class TagService
     protected Tag processData(Tag entity, UpdateTagInput data) {
         return super.processData(
                 new EntityBuilder<>(entity)
-                        .stringField(data::getName, entity::setName)
-                        .enumField(data::getColor, (val) -> entity.setColor((Tag.Color) val))
+                        .field(data::getName, entity::setName)
+                        .field(data::getColor, entity::setColor)
                         .getEntity(),
                 data);
     }

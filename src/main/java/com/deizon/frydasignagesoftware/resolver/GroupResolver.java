@@ -5,7 +5,6 @@ import com.deizon.frydasignagesoftware.model.group.CreateGroupInput;
 import com.deizon.frydasignagesoftware.model.group.FindGroupInput;
 import com.deizon.frydasignagesoftware.model.group.Group;
 import com.deizon.frydasignagesoftware.model.group.UpdateGroupInput;
-import com.deizon.frydasignagesoftware.repository.GroupRepository;
 import com.deizon.frydasignagesoftware.service.GroupService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import graphql.kickstart.tools.GraphQLQueryResolver;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 @PreAuthorize("isAuthenticated()")
 public class GroupResolver implements GraphQLQueryResolver, GraphQLMutationResolver {
 
-    private final GroupRepository groupRepository;
     private final GroupService service;
 
     public Iterable<Group> findAllGroups(FindGroupInput input) {
