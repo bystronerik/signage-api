@@ -2,7 +2,7 @@ FROM gradle:jdk16 AS build
 
 WORKDIR /usr/src/app
 RUN mkdir -p src/main/java
-COPY build.gradle ./
+COPY build.gradle gradle.properties ./
 RUN gradle build
 COPY . ./
 RUN gradle build -x spotlessJavaCheck test --continue
