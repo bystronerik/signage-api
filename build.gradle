@@ -7,8 +7,8 @@ plugins {
 
 group = 'com.deizon'
 version = '2.0.0'
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_13
+targetCompatibility = JavaVersion.VERSION_13
 
 configurations {
 	compileOnly {
@@ -39,17 +39,17 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux:2.5.4'
 	implementation 'org.springframework:spring-aspects:5.3.9'
 	implementation 'com.auth0:java-jwt:3.18.1'
-	implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:11.1.0'
-	implementation 'com.graphql-java-kickstart:graphql-java-tools:11.1.1'
-	implementation 'com.graphql-java-kickstart:graphql-java-servlet:11.1.1'
+	implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:11.0.0'
+	implementation 'com.graphql-java-kickstart:graphql-java-tools:11.0.0'
+	implementation 'com.graphql-java-kickstart:graphql-java-servlet:11.0.0'
 	implementation 'io.sentry:sentry-spring-boot-starter:5.1.2'
-	implementation "com.deizon.services:ServicesLibrary:2.5.3"
+	implementation "com.deizon.services:ServicesLibrary:2.5.2"
 	implementation "io.minio:minio:8.3.0"
 	testCompileOnly 'org.projectlombok:lombok:1.18.20'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 	testImplementation 'org.springframework.security:spring-security-test:5.5.1'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.4'
-	testImplementation 'com.graphql-java-kickstart:graphql-spring-boot-starter-test:11.1.0'
+	testImplementation 'com.graphql-java-kickstart:graphql-spring-boot-starter-test:11.0.0'
 }
 
 test {
