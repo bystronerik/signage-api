@@ -1,15 +1,14 @@
 FROM gradle:jdk16 AS build
 
 WORKDIR /usr/src/app
-RUN mkdir -p src/main/java
 COPY build.gradle gradle.properties ./
-RUN gradle build
+RUN gradle build -x bootJar --continue
 COPY . ./
 RUN gradle build -x spotlessJavaCheck test --continue
 
 # Stage - Production
-FROM openjdk:8-jre-slim
+FROM openjdk:13-slim
 EXPOSE 8080
 RUN mkdir /app
 COPY --from=build /usr/src/app/build/libs/*.jar /app/app.jar
-CMD ["java", "-XX:+UseCGroupMemoryLimitForHeap", "-jar", "-Dspring.profiles.active=prod", "/app/app.jar"]
+CMD ["java", "-jar", "-Dspring.profiles.active=prod", "/app/app.jar"]
