@@ -1,9 +1,5 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.deploydata;
 
-import com.deizon.frydasignagesoftware.model.AssetEntry;
-import com.deizon.frydasignagesoftware.model.alert.Alert;
-import com.deizon.frydasignagesoftware.model.style.Style;
 import com.deizon.services.model.Entity;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -22,8 +18,8 @@ public class PlayerData extends Entity {
     private String group;
     private String versionHash;
 
-    private List<AssetEntry> assets;
-    private List<AssetEntry> priorityAssets;
-    private Alert alert;
-    private List<Style> styles;
+    private List<AssetData> assets;
+    private List<AssetData> priorityAssets;
+    private AlertData alert;
+    private String styles;
 }

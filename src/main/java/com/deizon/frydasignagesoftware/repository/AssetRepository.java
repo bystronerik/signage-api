@@ -1,4 +1,3 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.repository;
 
 import com.deizon.frydasignagesoftware.model.asset.Asset;

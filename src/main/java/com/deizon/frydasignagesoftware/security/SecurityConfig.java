@@ -1,13 +1,7 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.security;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.JWTVerifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -15,26 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig {
 
     @Bean
-    public Algorithm jwtAlgorithm(SecurityProperties properties) {
-        return Algorithm.HMAC256(properties.getTokenSecret());
-    }
-
-    @Bean
-    public JWTVerifier verifier(SecurityProperties properties, Algorithm algorithm) {
-        return JWT.require(algorithm).withIssuer(properties.getTokenIssuer()).build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder(SecurityProperties properties) {
-        return new BCryptPasswordEncoder(properties.getPasswordStrength());
-    }
-
-    @Bean
-    public AuthenticationProvider authenticationProvider(
-            AuthUserService authUserService, PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(authUserService);
-        provider.setPasswordEncoder(passwordEncoder);
-        return provider;
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(10);
     }
 }

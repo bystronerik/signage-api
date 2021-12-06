@@ -1,18 +1,17 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver.entity;
 
 import com.deizon.frydasignagesoftware.model.group.Group;
 import com.deizon.frydasignagesoftware.model.player.Player;
 import com.deizon.frydasignagesoftware.repository.GroupRepository;
 import com.deizon.services.exception.ItemNotFoundException;
-import com.deizon.services.resolver.BaseResolver;
+import com.deizon.services.resolver.BaseEntityResolver;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class PlayerEntityResolver extends BaseResolver<Player> {
+public class PlayerEntityResolver extends BaseEntityResolver<Player> {
 
     private final GroupRepository groupRepository;
 

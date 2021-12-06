@@ -1,4 +1,3 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver.entity;
 
 import com.deizon.frydasignagesoftware.model.alert.Alert;
@@ -9,7 +8,7 @@ import com.deizon.frydasignagesoftware.model.style.Style;
 import com.deizon.frydasignagesoftware.model.tag.Tag;
 import com.deizon.frydasignagesoftware.repository.*;
 import com.deizon.services.exception.ItemNotFoundException;
-import com.deizon.services.resolver.BaseResolver;
+import com.deizon.services.resolver.BaseEntityResolver;
 import java.text.MessageFormat;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class AssetEntityResolver extends BaseResolver<Asset> {
+public class AssetEntityResolver extends BaseEntityResolver<Asset> {
 
     private final AssetListRepository assetListRepository;
     private final StyleRepository styleRepository;
@@ -84,8 +83,8 @@ public class AssetEntityResolver extends BaseResolver<Asset> {
         return this.processAsync(
                 () ->
                         MessageFormat.format(
-                                "{0}/storage/{1}",
-                                this.environment.getRequiredProperty("api.location"),
+                                "{0}/{1}",
+                                this.environment.getRequiredProperty("storage.location"),
                                 asset.getPath()));
     }
 }

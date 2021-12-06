@@ -1,22 +1,22 @@
-package com.deizon.frydasignagesoftware.model.alert;
+package com.deizon.frydasignagesoftware.model.deploydata;
 
-import com.deizon.services.model.ValidityInput;
-import java.time.Instant;
+import com.deizon.frydasignagesoftware.model.alert.Alert;
+import com.deizon.services.model.Validity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class UpdateAlertInput implements ValidityInput {
+@AllArgsConstructor
+@EqualsAndHashCode
+public class AlertData {
 
-    private String name;
-    private Alert.Type type;
+    private String id;
     private Alert.Position position;
     private String value;
-
-    private Boolean validityEnabled;
-    private Instant validFrom;
-    private Instant validTo;
+    private Validity validity;
 
     private String background;
     private String borders;

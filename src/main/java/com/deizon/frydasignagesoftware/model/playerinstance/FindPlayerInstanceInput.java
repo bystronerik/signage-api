@@ -1,4 +1,3 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.playerinstance;
 
 import com.deizon.services.model.FindInput;

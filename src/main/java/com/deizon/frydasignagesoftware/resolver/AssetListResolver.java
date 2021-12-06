@@ -1,11 +1,8 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver;
 
 import com.deizon.frydasignagesoftware.model.assetlist.*;
-import com.deizon.frydasignagesoftware.repository.*;
 import com.deizon.frydasignagesoftware.service.AssetListService;
-import graphql.kickstart.tools.GraphQLMutationResolver;
-import graphql.kickstart.tools.GraphQLQueryResolver;
+import com.deizon.services.resolver.BaseResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -13,7 +10,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 @PreAuthorize("isAuthenticated()")
-public class AssetListResolver implements GraphQLQueryResolver, GraphQLMutationResolver {
+public class AssetListResolver extends BaseResolver {
 
     private final AssetListService service;
 

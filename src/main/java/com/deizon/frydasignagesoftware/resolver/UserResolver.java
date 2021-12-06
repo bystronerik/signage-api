@@ -1,4 +1,3 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver;
 
 import com.deizon.frydasignagesoftware.model.user.CreateUserInput;
@@ -6,8 +5,7 @@ import com.deizon.frydasignagesoftware.model.user.FindUserInput;
 import com.deizon.frydasignagesoftware.model.user.UpdateUserInput;
 import com.deizon.frydasignagesoftware.model.user.User;
 import com.deizon.frydasignagesoftware.service.UserService;
-import graphql.kickstart.tools.GraphQLMutationResolver;
-import graphql.kickstart.tools.GraphQLQueryResolver;
+import com.deizon.services.resolver.BaseResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -15,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 @PreAuthorize("isAuthenticated()")
-public class UserResolver implements GraphQLQueryResolver, GraphQLMutationResolver {
+public class UserResolver extends BaseResolver {
 
     private final UserService service;
 

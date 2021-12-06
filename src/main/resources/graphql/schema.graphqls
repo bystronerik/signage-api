@@ -6,6 +6,10 @@ type Mutation {
     login(username: String!, password: String!, shortSession: Boolean!): LoginDetails
 }
 
+type Subscription {
+
+}
+
 type LoginDetails {
     user: User!
     token: Token!
@@ -35,4 +39,5 @@ input ListChange {
 schema {
     query: Query,
     mutation: Mutation
+    subscription: Subscription
 }

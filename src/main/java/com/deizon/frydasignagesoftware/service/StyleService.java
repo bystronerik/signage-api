@@ -1,4 +1,3 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.service;
 
 import com.deizon.frydasignagesoftware.model.style.CreateStyleInput;

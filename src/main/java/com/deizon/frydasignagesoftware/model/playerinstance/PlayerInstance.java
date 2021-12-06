@@ -1,4 +1,3 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.model.playerinstance;
 
 import com.deizon.services.model.Entity;
@@ -14,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class PlayerInstance extends Entity {
 
     private String player;
-    private Boolean physical; // TODO doladit název
+    private Boolean virtual;
     // TODO potřeba přidat další fieldy pro identifikaci a určení vlastností
     // TODO potřeba dodělat inputy podle používání ??
 

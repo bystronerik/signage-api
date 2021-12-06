@@ -1,28 +1,25 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.service;
 
 import com.deizon.frydasignagesoftware.model.asset.Asset;
 import com.deizon.frydasignagesoftware.model.asset.CreateAssetInput;
 import com.deizon.frydasignagesoftware.model.asset.FindAssetInput;
 import com.deizon.frydasignagesoftware.model.asset.UpdateAssetInput;
+import com.deizon.frydasignagesoftware.model.directory.Directory;
 import com.deizon.frydasignagesoftware.repository.AssetListRepository;
 import com.deizon.frydasignagesoftware.repository.AssetRepository;
+import com.deizon.frydasignagesoftware.repository.DirectoryRepository;
 import com.deizon.services.exception.ItemNotFoundException;
 import com.deizon.services.exception.UnsupportedFileType;
+import com.deizon.services.minio.service.MinioService;
 import com.deizon.services.model.FileUpload;
 import com.deizon.services.model.file.FileType;
 import com.deizon.services.service.BaseService;
 import com.deizon.services.util.EntityBuilder;
 import com.deizon.services.util.ExampleBuilder;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Instant;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Example;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,16 +28,19 @@ public class AssetService
                 Asset, CreateAssetInput, UpdateAssetInput, FindAssetInput, AssetRepository> {
 
     private final AssetListRepository assetListRepository;
-    private final ResourceLoader resourceLoader;
+    private final DirectoryRepository directoryRepository;
+    private final MinioService minioService;
 
     public AssetService(
             AssetRepository assetRepository,
+            DirectoryRepository directoryRepository,
             AssetListRepository assetListRepository,
-            ResourceLoader resourceLoader) {
+            MinioService minioService) {
         super(Asset.class, assetRepository, CreateAssetInput.class, UpdateAssetInput.class);
 
         this.assetListRepository = assetListRepository;
-        this.resourceLoader = resourceLoader;
+        this.directoryRepository = directoryRepository;
+        this.minioService = minioService;
     }
 
     public Asset create(CreateAssetInput input, FileUpload file) throws IOException {
@@ -48,6 +48,14 @@ public class AssetService
 
         if (file != null) {
             this.processAssetFile(entity, file);
+        }
+
+        if (input.getDirectory() == null) {
+            input.setDirectory(
+                    this.directoryRepository
+                            .findRoot()
+                            .orElseThrow(() -> new ItemNotFoundException(Directory.class))
+                            .getId());
         }
 
         return this.processData(entity, input);
@@ -115,10 +123,9 @@ public class AssetService
     }
 
     private void processAssetFile(Asset entity, FileUpload file) throws IOException {
-        final String type = this.getType(file.getContentType());
-        final String fileName = RandomStringUtils.random(20, true, true) + "." + type;
+        final String fileName =
+                RandomStringUtils.random(20, true, true) + "." + file.getMediaType().getSubtype();
 
-        // TODO předělat pak na MediaType
         switch (file.getContentType()) {
             case "image/png":
                 entity.setType(FileType.IMAGE_PNG);
@@ -145,18 +152,6 @@ public class AssetService
                 throw new UnsupportedFileType();
         }
 
-        try (FileOutputStream out = new FileOutputStream(getLocation(fileName))) {
-            IOUtils.copy(file.getContent(), out);
-        }
-
-        entity.setPath(fileName);
-    }
-
-    private File getLocation(String filename) throws IOException {
-        return new File(resourceLoader.getResource("file:./data/").getFile(), filename);
-    }
-
-    private String getType(String mimetype) {
-        return MediaType.parseMediaType(mimetype).getSubtype();
+        entity.setPath(minioService.putObject(fileName, file, null));
     }
 }

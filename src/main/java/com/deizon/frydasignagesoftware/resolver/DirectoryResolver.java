@@ -1,26 +1,28 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver;
 
 import com.deizon.frydasignagesoftware.model.directory.CreateDirectoryInput;
 import com.deizon.frydasignagesoftware.model.directory.Directory;
 import com.deizon.frydasignagesoftware.model.directory.FindDirectoryInput;
 import com.deizon.frydasignagesoftware.model.directory.UpdateDirectoryInput;
-import com.deizon.frydasignagesoftware.repository.*;
 import com.deizon.frydasignagesoftware.service.DirectoryService;
-import graphql.kickstart.tools.GraphQLMutationResolver;
-import graphql.kickstart.tools.GraphQLQueryResolver;
+import com.deizon.services.resolver.BaseResolver;
+import graphql.schema.DataFetchingEnvironment;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
+@Log
 @RequiredArgsConstructor
 @Component
 @PreAuthorize("isAuthenticated()")
-public class DirectoryResolver implements GraphQLQueryResolver, GraphQLMutationResolver {
+public class DirectoryResolver extends BaseResolver {
 
     private final DirectoryService service;
 
-    public Iterable<Directory> findAllDirectories(FindDirectoryInput input) {
+    public Iterable<Directory> findAllDirectories(
+            FindDirectoryInput input, DataFetchingEnvironment env) {
+        log.info(this.getClientId(env));
         return this.service.findAll(input);
     }
 

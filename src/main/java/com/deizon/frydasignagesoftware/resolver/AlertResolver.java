@@ -1,4 +1,3 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver;
 
 import com.deizon.frydasignagesoftware.model.alert.Alert;
@@ -6,8 +5,7 @@ import com.deizon.frydasignagesoftware.model.alert.CreateAlertInput;
 import com.deizon.frydasignagesoftware.model.alert.FindAlertInput;
 import com.deizon.frydasignagesoftware.model.alert.UpdateAlertInput;
 import com.deizon.frydasignagesoftware.service.AlertService;
-import graphql.kickstart.tools.GraphQLMutationResolver;
-import graphql.kickstart.tools.GraphQLQueryResolver;
+import com.deizon.services.resolver.BaseResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -15,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 @PreAuthorize("isAuthenticated()")
-public class AlertResolver implements GraphQLQueryResolver, GraphQLMutationResolver {
+public class AlertResolver extends BaseResolver {
 
     private final AlertService service;
 

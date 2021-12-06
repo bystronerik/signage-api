@@ -1,4 +1,3 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver.entity;
 
 import com.deizon.frydasignagesoftware.model.user.User;

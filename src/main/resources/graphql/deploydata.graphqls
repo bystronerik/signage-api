@@ -4,10 +4,35 @@ type DeployData {
 }
 
 type PlayerData {
-    assets: [AssetEntry]!
-    priorityAssets: [AssetEntry]!
-    alert: Alert
-    styles: [Style]!
+    assets: [AssetData]!
+    priorityAssets: [AssetData]!
+    alert: AlertData
+    styles: String!
+}
+
+type AssetData {
+    id: ID!
+    path: String!
+    type: FileType!
+    showTime: Int
+    validity: Validity
+    animationIn: String
+    animationOut: String
+    alert: AlertData
+}
+
+type AlertData {
+    id: ID!
+    position: String!
+    value: String!
+    validity: Validity
+    background: String
+    borders: String
+    height: String
+    textSize: String
+    textColor: String
+    textPosition: String
+    running: Boolean
 }
 
 extend type Query {
@@ -17,4 +42,8 @@ extend type Query {
 
 extend type Mutation {
     deploy: DeployData
+}
+
+extend type Subscription {
+    deployInfoSync: DeployData
 }

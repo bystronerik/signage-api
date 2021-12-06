@@ -1,13 +1,13 @@
 {
   "properties": [
     {
-      "name": "api.location",
+      "name": "storage.location",
       "type": "java.lang.String",
-      "description": "Public location of /storage endpoint to use when saving asset."
+      "description": "Public location of storage endpoint to use when saving asset."
     },
     {
       "name": "sentry.dsn",
       "type": "java.lang.String",
       "description": "Sentry dsn key."
-    }
+    },
   ] }

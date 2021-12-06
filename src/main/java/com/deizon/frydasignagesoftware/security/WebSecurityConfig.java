@@ -1,13 +1,12 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.security;
 
+import com.deizon.services.jwt.JWTFilter;
+import com.deizon.services.jwt.JWTProperties;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,16 +21,10 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-@EnableConfigurationProperties(SecurityProperties.class)
+@EnableConfigurationProperties(JWTProperties.class)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final AuthenticationProvider authenticationProvider;
     private final JWTFilter jwtFilter;
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(authenticationProvider);
-    }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
@@ -39,6 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests()
                 .antMatchers("/graphql")
+                .permitAll()
+                .antMatchers("/subscriptions")
                 .permitAll()
                 .antMatchers("/storage/**")
                 .permitAll()

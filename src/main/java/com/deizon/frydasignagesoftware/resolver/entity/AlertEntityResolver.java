@@ -1,18 +1,17 @@
-/* Copyright: Erik Bystroň - Redistribution and any changes prohibited. */
 package com.deizon.frydasignagesoftware.resolver.entity;
 
 import com.deizon.frydasignagesoftware.model.alert.Alert;
 import com.deizon.frydasignagesoftware.model.style.Style;
 import com.deizon.frydasignagesoftware.repository.StyleRepository;
 import com.deizon.services.exception.ItemNotFoundException;
-import com.deizon.services.resolver.BaseResolver;
+import com.deizon.services.resolver.BaseEntityResolver;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class AlertEntityResolver extends BaseResolver<Alert> {
+public class AlertEntityResolver extends BaseEntityResolver<Alert> {
 
     private final StyleRepository styleRepository;
 
